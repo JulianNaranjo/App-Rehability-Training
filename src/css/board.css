@@ -1,0 +1,83 @@
+/* Game Board Styles */
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: var(--tile-gap);
+  aspect-ratio: 1;
+}
+
+.tile {
+  background: var(--tile-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-tile);
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.tile:hover {
+  background: var(--tile-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-tile);
+}
+
+.tile:active {
+  transform: scale(0.95);
+}
+
+.tile.selected {
+  background: var(--tile-selected);
+  border-color: var(--primary-color);
+  color: #fff;
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.tile.correct {
+  background: var(--tile-correct);
+  border-color: var(--secondary-color);
+  box-shadow: var(--shadow-glow-secondary);
+}
+
+.tile.wrong {
+  background: var(--tile-wrong);
+  border-color: var(--error-color);
+  box-shadow: var(--shadow-glow-error);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tile {
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}

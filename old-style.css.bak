@@ -1,0 +1,320 @@
+:root {
+    --bg-color: #0f1016;
+    --card-bg: rgba(30, 32, 45, 0.7);
+    --primary-color: #bb86fc;
+    --secondary-color: #03dac6;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --tile-bg: rgba(255, 255, 255, 0.05);
+    --tile-hover: rgba(255, 255, 255, 0.1);
+    --tile-selected: rgba(187, 134, 252, 0.3);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-soft: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --font-family: 'Outfit', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(100, 50, 200, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(50, 200, 200, 0.15) 0%, transparent 40%);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.app-container {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
+header {
+    text-align: center;
+}
+
+.game-title {
+    font-weight: 700;
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+}
+
+.instruction {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+.highlight {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.4rem;
+    text-shadow: 0 0 10px rgba(187, 134, 252, 0.4);
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 4px;
+    aspect-ratio: 1;
+}
+
+.tile {
+    background: var(--tile-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+.tile:hover {
+    background: var(--tile-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tile:active {
+    transform: scale(0.95);
+}
+
+.tile.selected {
+    background: var(--tile-selected);
+    border-color: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 0 15px rgba(187, 134, 252, 0.4);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+input[type="number"] {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-family: var(--font-family);
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="number"]:focus {
+    border-color: var(--primary-color);
+}
+
+.helper-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-left: 0.5rem;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--primary-color), #9f5afd);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(159, 90, 253, 0.3);
+}
+
+.primary-btn:hover {
+    filter: brightness(1.1);
+}
+
+.primary-btn:active {
+    transform: scale(0.98);
+}
+
+.tile.correct {
+    background: rgba(3, 218, 198, 0.2);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 15px rgba(3, 218, 198, 0.4);
+}
+
+.tile.wrong {
+    background: rgba(207, 102, 121, 0.2);
+    border-color: #cf6679;
+    box-shadow: 0 0 15px rgba(207, 102, 121, 0.4);
+}
+
+.secondary-btn {
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 1rem;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+    background: rgba(187, 134, 252, 0.1);
+}
+
+.feedback-msg {
+    text-align: center;
+    min-height: 1.5rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.feedback-success {
+    color: var(--secondary-color);
+}
+
+.feedback-error {
+    color: #cf6679;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    70% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.tile {
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+/* Stagger animations for tiles */
+.tile:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.tile:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.tile:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.tile:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.tile:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.tile:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.tile:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.tile:nth-child(8) {
+    animation-delay: 0.4s;
+}
+
+.tile:nth-child(9) {
+    animation-delay: 0.45s;
+}
+
+.tile:nth-child(10) {
+    animation-delay: 0.5s;
+}
+
+.tile:nth-child(11) {
+    animation-delay: 0.55s;
+}
+
+.tile:nth-child(12) {
+    animation-delay: 0.6s;
+}
+
+.tile:nth-child(13) {
+    animation-delay: 0.65s;
+}
+
+.tile:nth-child(14) {
+    animation-delay: 0.7s;
+}
+
+.tile:nth-child(15) {
+    animation-delay: 0.75s;
+}
+
+.tile:nth-child(16) {
+    animation-delay: 0.8s;
+}

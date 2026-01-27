@@ -1,0 +1,41 @@
+{
+  "name": "letter-hunt",
+  "version": "2.0.0",
+  "description": "A browser-based word puzzle game where players hunt for target letters on a grid",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve . --listen 8000",
+    "build": "echo 'No build step required for vanilla JS project'",
+    "lint": "eslint src/js --ext .js",
+    "lint:fix": "eslint src/js --ext .js --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.{js,css}' 'types/**/*.ts'",
+    "validate": "npm run lint && npm run typecheck"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.50.0",
+    "prettier": "^3.0.0",
+    "serve": "^14.0.0",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "game",
+    "puzzle",
+    "word-game",
+    "javascript",
+    "typescript"
+  ],
+  "author": "Letter Hunt Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/letter-hunt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/letter-hunt/issues"
+  },
+  "homepage": "https://github.com/your-username/letter-hunt#readme"
+}

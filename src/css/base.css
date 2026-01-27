@@ -1,0 +1,63 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(100, 50, 200, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(50, 200, 200, 0.15) 0%, transparent 40%);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.app-container {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-xxl);
+  width: var(--app-width);
+  max-width: var(--app-max-width);
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+header {
+  text-align: center;
+}
+
+.game-title {
+  font-weight: 700;
+  font-size: var(--font-size-title);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: var(--spacing-sm);
+  letter-spacing: -1px;
+}
+
+.instruction {
+  font-size: var(--font-size-instruction);
+  color: var(--text-secondary);
+  font-weight: 300;
+}
+
+.highlight {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: var(--font-size-highlight);
+  text-shadow: var(--shadow-glow-primary);
+}

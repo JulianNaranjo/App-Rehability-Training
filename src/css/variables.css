@@ -1,0 +1,58 @@
+:root {
+  /* Colors */
+  --bg-color: #0f1016;
+  --card-bg: rgba(30, 32, 45, 0.7);
+  --primary-color: #bb86fc;
+  --secondary-color: #03dac6;
+  --error-color: #cf6679;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  
+  /* Tile States */
+  --tile-bg: rgba(255, 255, 255, 0.05);
+  --tile-hover: rgba(255, 255, 255, 0.1);
+  --tile-selected: rgba(187, 134, 252, 0.3);
+  --tile-correct: rgba(3, 218, 198, 0.2);
+  --tile-wrong: rgba(207, 102, 121, 0.2);
+  
+  /* Border & Shadows */
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-soft: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-tile: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-primary-btn: 0 4px 15px rgba(159, 90, 253, 0.3);
+  --shadow-glow-primary: 0 0 15px rgba(187, 134, 252, 0.4);
+  --shadow-glow-secondary: 0 0 15px rgba(3, 218, 198, 0.4);
+  --shadow-glow-error: 0 0 15px rgba(207, 102, 121, 0.4);
+  
+  /* Typography */
+  --font-family: 'Outfit', sans-serif;
+  --font-size-title: 2.5rem;
+  --font-size-instruction: 1.2rem;
+  --font-size-highlight: 1.4rem;
+  --font-size-tile: 0.9rem;
+  --font-size-input: 1.2rem;
+  --font-size-button: 1.1rem;
+  --font-size-feedback: 1.2rem;
+  --font-size-helper: 0.9rem;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 2.5rem;
+  
+  /* Layout */
+  --app-max-width: 500px;
+  --app-width: 90%;
+  --border-radius: 12px;
+  --border-radius-large: 24px;
+  --tile-gap: 4px;
+  --animation-stagger-delay: 0.05s;
+  
+  /* Transitions */
+  --transition-fast: 0.1s;
+  --transition-normal: 0.2s;
+  --transition-slow: 0.8s;
+}

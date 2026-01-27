@@ -1,0 +1,95 @@
+/* Controls and Form Elements */
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+input[type="number"] {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  color: var(--text-primary);
+  font-size: var(--font-size-input);
+  font-family: var(--font-family);
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-normal);
+}
+
+input[type="number"]:focus {
+  border-color: var(--primary-color);
+}
+
+.helper-text {
+  font-size: var(--font-size-helper);
+  color: var(--text-secondary);
+  margin-left: var(--spacing-sm);
+}
+
+/* Button Styles */
+.primary-btn {
+  background: linear-gradient(135deg, var(--primary-color), #9f5afd);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  color: #fff;
+  font-size: var(--font-size-button);
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: filter var(--transition-normal), transform var(--transition-fast);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-sm);
+  box-shadow: var(--shadow-primary-btn);
+}
+
+.primary-btn:hover {
+  filter: brightness(1.1);
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  color: var(--primary-color);
+  font-size: var(--font-size-button);
+  font-weight: 600;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.secondary-btn:hover {
+  background: rgba(187, 134, 252, 0.1);
+}
+
+/* Feedback Styles */
+.feedback-msg {
+  text-align: center;
+  min-height: 1.5rem;
+  font-weight: 600;
+  font-size: var(--font-size-feedback);
+}
+
+.feedback-success {
+  color: var(--secondary-color);
+}
+
+.feedback-error {
+  color: var(--error-color);
+}

@@ -1,0 +1,59 @@
+/* Letter Hunt Game - Refactored Styles */
+@import url('./variables.css');
+@import url('./base.css');
+@import url('./board.css');
+@import url('./controls.css');
+
+/* Additional utility classes */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .app-container {
+    width: 95%;
+    padding: var(--spacing-lg);
+  }
+  
+  .game-title {
+    font-size: 2rem;
+  }
+  
+  .tile {
+    font-size: 0.8rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .tile {
+    border-width: 2px;
+  }
+  
+  .tile.selected,
+  .tile.correct,
+  .tile.wrong {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
