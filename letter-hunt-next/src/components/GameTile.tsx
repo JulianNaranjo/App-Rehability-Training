@@ -35,15 +35,20 @@ export function GameTile({
   const getStatusStyles = () => {
     switch (status) {
       case 'selected':
-        return 'bg-primary-500 text-white shadow-lg shadow-primary-500/25 scale-105';
+        // Fondo violeta, TEXTO NEGRO (siempre negro)
+        return 'bg-primary-500 text-gray-900 border-2 border-primary-600 shadow-lg';
       case 'correct':
-        return 'bg-success text-white shadow-lg shadow-success/25 scale-100';
+        // Fondo verde, TEXTO NEGRO
+        return 'bg-success text-gray-900 border-2 border-success';
       case 'wrong':
-        return 'bg-error text-white shadow-lg shadow-error/25 animate-shake';
+        // Fondo rojo, TEXTO NEGRO
+        return 'bg-error text-gray-900 border-2 border-error animate-shake';
       case 'target':
-        return 'bg-neutral-800 text-neutral-300 border border-neutral-600';
+        // IDÉNTICO al estado normal - sin pistas visuales
+        return 'bg-white text-gray-900 border-2 border-gray-800 shadow-sm';
       default:
-        return 'bg-neutral-900 text-neutral-400 border border-neutral-800';
+        // Estado normal: Fondo blanco, TEXTO NEGRO
+        return 'bg-white text-gray-900 border-2 border-gray-800 shadow-sm';
     }
   };
   

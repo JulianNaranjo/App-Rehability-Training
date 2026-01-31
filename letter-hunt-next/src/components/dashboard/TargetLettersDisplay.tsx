@@ -1,0 +1,57 @@
+'use client';
+
+/**
+ * Target Letters Display Component
+ * 
+ * Displays all target letters in a single card with gradient background.
+ * Dashboard-style design matching the main dashboard aesthetics.
+ * 
+ * @module TargetLettersDisplay
+ */
+
+import { cn } from '@/lib/utils';
+
+interface TargetLettersDisplayProps {
+  /** Array of target letters to display */
+  letters: string[];
+  /** Additional CSS classes */
+  className?: string;
+}
+
+/**
+ * Target Letters Display - Card showing all letters to find
+ * 
+ * Displays target letters in a gradient card with the text
+ * "Busca todas las letras: A, B, C"
+ */
+export function TargetLettersDisplay({ letters, className }: TargetLettersDisplayProps) {
+  if (!letters || letters.length === 0) return null;
+
+  const lettersText = letters.map(l => l.toUpperCase()).join(', ');
+
+  return (
+    <div
+      className={cn(
+        // Base card styles - matching dashboard cards
+        'relative w-full rounded-2xl p-6 md:p-8',
+        'bg-gradient-to-r from-primary-500 to-primary-700',
+        'text-white shadow-lg',
+        className
+      )}
+      role="region"
+      aria-label="Letras objetivo"
+    >
+      <div className="text-center">
+        {/* Label */}
+        <p className="text-sm md:text-base opacity-90 mb-3">
+          Busca todas las letras:
+        </p>
+        
+        {/* Letters */}
+        <p className="text-3xl md:text-4xl font-bold tracking-wider">
+          {lettersText}
+        </p>
+      </div>
+    </div>
+  );
+}

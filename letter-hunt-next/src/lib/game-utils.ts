@@ -242,22 +242,25 @@ export function getTileStatus(
   gameState: string
 ): TileStatus {
   if (letter === '') return 'empty';
-  if (!targetLetters.includes(letter)) {
-    return selectedIndices.has(index) ? 'wrong' : 'empty';
-  }
   
   const isTarget = solutionIndices.has(index);
   const isSelected = selectedIndices.has(index);
   
-  if (gameState === 'checking' || gameState === 'won' || gameState === 'lost') {
-    if (isTarget && isSelected) return 'correct';
-    if (isTarget && !isSelected) return 'target';
-    if (isSelected && !isTarget) return 'wrong';
+  // Durante el juego (playing): todas las seleccionadas son 'selected' (violeta)
+  if (gameState === 'playing') {
+    if (isSelected) return 'selected';
+    // Las target no seleccionadas se ven igual que las normales (sin pistas)
     return 'empty';
   }
   
-  if (isSelected) return 'selected';
-  if (isTarget && gameState === 'playing') return 'target';
+  // Después de verificar (checking/won/lost): mostrar correctas/incorrectas
+  if (gameState === 'checking' || gameState === 'won' || gameState === 'lost') {
+    if (isTarget && isSelected) return 'correct';      // Target seleccionada = verde
+    if (isSelected && !isTarget) return 'wrong';       // No-target seleccionada = rojo
+    // Las target no seleccionadas no se marcan (siguen blancas)
+    return 'empty';
+  }
+  
   return 'empty';
 }
 
