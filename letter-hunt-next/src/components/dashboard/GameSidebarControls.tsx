@@ -32,6 +32,8 @@ interface GameSidebarControlsProps {
   onVerify: () => void;
   /** Callback for new game action */
   onNewGame: () => void;
+  /** Callback for next level action */
+  onNextLevel?: () => void;
   /** Callback for reset action */
   onReset: () => void;
   /** Callback for return to dashboard */
@@ -61,6 +63,7 @@ export function GameSidebarControls({
   userCount,
   onVerify,
   onNewGame,
+  onNextLevel,
   onReset,
   onReturn,
   onShowNameInput,
@@ -118,13 +121,24 @@ export function GameSidebarControls({
       {/* Won State */}
       {isWon && (
         <>
+          {/* Next Level - Only when won */}
           <Button
-            onClick={onNewGame}
+            onClick={onNextLevel}
             variant="primary"
             className="w-full"
           >
             <Play className="w-4 h-4 mr-2" aria-hidden="true" />
-            Nuevo Juego
+            Siguiente nivel
+          </Button>
+
+          {/* Play Again - Available for both win and lose */}
+          <Button
+            onClick={onNewGame}
+            variant="secondary"
+            className="w-full"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" aria-hidden="true" />
+            Jugar de nuevo
           </Button>
 
           {!showNameInput && (
@@ -148,7 +162,7 @@ export function GameSidebarControls({
           className="w-full"
         >
           <RotateCcw className="w-4 h-4 mr-2" aria-hidden="true" />
-          Intentar de Nuevo
+          Jugar de nuevo
         </Button>
       )}
 

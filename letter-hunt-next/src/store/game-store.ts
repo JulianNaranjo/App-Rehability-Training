@@ -27,9 +27,9 @@ import { soundManager } from '@/lib/sounds';
  */
 const getLevelTargetTypes = (level: number): number => {
   if (level === 1) return 1;        // Nivel 1: 1 tipo de letra
-  if (level <= 3) return 2;        // Niveles 2-3: 2 tipos de letras  
-  if (level === 4) return 3;        // Nivel 4: 3 tipos de letras
-  return Math.min(4, 3 + Math.floor(level / 3)); // Niveles 5+: 3-4 tipos de letras (máximo 4)
+  if (level === 2) return 2;        // Nivel 2: 2 tipos de letras
+  if (level === 3) return 3;        // Nivel 3: 3 tipos de letras
+  return 4;                         // Nivel 4+: 4 tipos de letras (máximo)
 };
 
 /**

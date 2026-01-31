@@ -52,6 +52,7 @@ export function GameBoardContainer({
     userCount,
     checkAnswer,
     generateNewGame,
+    nextLevel,
     resetGame,
     addToLeaderboard,
     setUserCount,
@@ -103,6 +104,13 @@ export function GameBoardContainer({
     setPlayerName('');
     generateNewGame();
   }, [generateNewGame]);
+
+  // Handle next level
+  const handleNextLevel = useCallback(() => {
+    setShowNameInput(false);
+    setPlayerName('');
+    nextLevel();
+  }, [nextLevel]);
 
   // Handle reset
   const handleReset = useCallback(() => {
@@ -179,6 +187,7 @@ export function GameBoardContainer({
               userCount={userCount}
               onVerify={handleVerify}
               onNewGame={handleNewGame}
+              onNextLevel={handleNextLevel}
               onReset={handleReset}
               onReturn={() => onReturnToDashboard?.()}
               onShowNameInput={() => setShowNameInput(true)}
