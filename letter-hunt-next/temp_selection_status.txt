@@ -1,0 +1,30 @@
+        {/* Game mode specific status */}
+        {isPlaying && (
+          <div className="mb-4">
+            {gameMode === 'selection' ? (
+              <>
+                <p className="text-lg text-neutral-300 mb-2">
+                  Seleccionadas: <span className="font-bold text-primary-400">{selectedCount}</span> / 
+                  <span className="font-bold"> {targetCount}</span>
+                </p>
+                
+                {remainingCount > 0 && (
+                  <p className="text-sm text-neutral-500">
+                    {remainingCount} restantes
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="text-lg text-neutral-300 mb-2">
+                  Cuenta las letras <span className="font-bold text-primary-400">
+                    {useGameStore.getState().targetLetters.join(', ')}
+                  </span>
+                </p>
+                <p className="text-sm text-neutral-500">
+                  Hay {targetCount} letras en total
+                </p>
+              </>
+            )}
+          </div>
+        )}
