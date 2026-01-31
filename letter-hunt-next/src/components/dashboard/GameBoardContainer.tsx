@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useGameStore } from '@/store/game-store';
 import { cn } from '@/lib/utils';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Trophy } from 'lucide-react';
 
 interface GameBoardContainerProps {
@@ -48,10 +48,13 @@ export function GameBoardContainer({
     score,
     currentLevel,
     gameState,
+    gameMode,
+    userCount,
     checkAnswer,
     generateNewGame,
     resetGame,
     addToLeaderboard,
+    setUserCount,
   } = useGameStore();
 
   const [isChecking, setIsChecking] = useState(false);
@@ -62,9 +65,22 @@ export function GameBoardContainer({
   const isWon = gameState === 'won';
   const isLost = gameState === 'lost';
 
+  // Timer effect - update elapsed time every 100ms while playing
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const interval = setInterval(() => {
+      useGameStore.getState().updateElapsedTime();
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
   const targetCount = solutionIndices.size;
   const selectedCount = selectedIndices.size;
-  const canVerify = selectedCount > 0;
+  const canVerify = gameMode === 'selection' 
+    ? selectedCount > 0 
+    : userCount !== undefined && userCount > 0;
 
   // Handle verify answer
   const handleVerify = useCallback(() => {
@@ -74,6 +90,12 @@ export function GameBoardContainer({
     checkAnswer();
     setTimeout(() => setIsChecking(false), 1500);
   }, [canVerify, isChecking, checkAnswer]);
+
+  // Handle count input change
+  const handleCountChange = useCallback((value: string) => {
+    const count = parseInt(value, 10);
+    setUserCount(isNaN(count) ? 0 : count);
+  }, [setUserCount]);
 
   // Handle new game
   const handleNewGame = useCallback(() => {
@@ -109,7 +131,7 @@ export function GameBoardContainer({
         {/* Section Title */}
         <div className="mb-6 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-            Mejora atención - Modo Selección
+            Mejora atención - {gameMode === 'count' ? 'Modo Conteo' : 'Modo Selección'}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 text-lg">
             Nivel {currentLevel}
@@ -150,14 +172,17 @@ export function GameBoardContainer({
 
             <GameSidebarControls
               gameState={gameState}
+              gameMode={gameMode}
               canVerify={canVerify}
               isChecking={isChecking}
               showNameInput={showNameInput}
+              userCount={userCount}
               onVerify={handleVerify}
               onNewGame={handleNewGame}
               onReset={handleReset}
               onReturn={() => onReturnToDashboard?.()}
               onShowNameInput={() => setShowNameInput(true)}
+              onCountChange={handleCountChange}
             />
           </div>
 
