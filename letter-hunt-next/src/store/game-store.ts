@@ -18,8 +18,7 @@ import {
   checkSelection, 
   calculateScore,
   calculateCountScore,
-  gameStorage,
-  debounce
+  gameStorage
 } from '@/lib/game-utils';
 import { soundManager } from '@/lib/sounds';
 
@@ -483,12 +482,12 @@ export const useGameStore = create<GameStore>()(
     },
     
     // Utility
-    updateElapsedTime: debounce(() => {
+    updateElapsedTime: () => {
       const { gameState, startTime } = get();
       if (gameState === 'playing' && startTime) {
         set({ elapsedTime: (Date.now() - startTime) / 1000 });
       }
-    }, 100),
+    },
   }))
 );
 
@@ -497,11 +496,6 @@ if (typeof window !== 'undefined') {
   useGameStore.getState().loadStats();
   useGameStore.getState().loadSettings();
   useGameStore.getState().loadLeaderboard();
-  
-  // Update elapsed time periodically
-  setInterval(() => {
-    useGameStore.getState().updateElapsedTime();
-  }, 100);
   
   // Save settings when they change
   useGameStore.subscribe(
