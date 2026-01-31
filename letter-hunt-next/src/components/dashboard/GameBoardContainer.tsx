@@ -1,0 +1,224 @@
+'use client';
+
+/**
+ * Game Board Container Component
+ *
+ * Main wrapper for the game board with dashboard-style design.
+ * Integrates: target letters display, progress, timer/score, board, and controls.
+ *
+ * @module GameBoardContainer
+ */
+
+import { GameBoard } from '@/components/GameBoard';
+import { TargetLettersDisplay } from './TargetLettersDisplay';
+import { GameProgress } from './GameProgress';
+import { GameTimerScore } from './GameTimerScore';
+import { GameSidebarControls } from './GameSidebarControls';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { useGameStore } from '@/store/game-store';
+import { cn } from '@/lib/utils';
+import { useState, useCallback } from 'react';
+import { Trophy } from 'lucide-react';
+
+interface GameBoardContainerProps {
+  /** Additional CSS classes */
+  className?: string;
+  /** Callback to return to dashboard */
+  onReturnToDashboard?: () => void;
+}
+
+/**
+ * Game Board Container - Dashboard-style game interface
+ *
+ * Layout:
+ * - Top section: Dashboard-style card with letters, progress, timer
+ * - Middle: Game board (left) + Sidebar controls (right)
+ * - On mobile: Board above, controls below
+ */
+export function GameBoardContainer({
+  className,
+  onReturnToDashboard,
+}: GameBoardContainerProps) {
+  const {
+    targetLetters,
+    selectedIndices,
+    solutionIndices,
+    elapsedTime,
+    score,
+    currentLevel,
+    gameState,
+    checkAnswer,
+    generateNewGame,
+    resetGame,
+    addToLeaderboard,
+  } = useGameStore();
+
+  const [isChecking, setIsChecking] = useState(false);
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+
+  const isPlaying = gameState === 'playing';
+  const isWon = gameState === 'won';
+  const isLost = gameState === 'lost';
+
+  const targetCount = solutionIndices.size;
+  const selectedCount = selectedIndices.size;
+  const canVerify = selectedCount > 0;
+
+  // Handle verify answer
+  const handleVerify = useCallback(() => {
+    if (!canVerify || isChecking) return;
+
+    setIsChecking(true);
+    checkAnswer();
+    setTimeout(() => setIsChecking(false), 1500);
+  }, [canVerify, isChecking, checkAnswer]);
+
+  // Handle new game
+  const handleNewGame = useCallback(() => {
+    setShowNameInput(false);
+    setPlayerName('');
+    generateNewGame();
+  }, [generateNewGame]);
+
+  // Handle reset
+  const handleReset = useCallback(() => {
+    setShowNameInput(false);
+    setPlayerName('');
+    resetGame();
+  }, [resetGame]);
+
+  // Handle submit score
+  const handleSubmitScore = useCallback(() => {
+    if (playerName.trim()) {
+      addToLeaderboard(playerName.trim());
+      setShowNameInput(false);
+      setPlayerName('');
+      handleNewGame();
+    }
+  }, [playerName, addToLeaderboard, handleNewGame]);
+
+  return (
+    <div className={cn('space-y-6', className)}>
+      {/* Dashboard-style Header Section */}
+      <section
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8"
+        aria-label="Información del juego"
+      >
+        {/* Section Title */}
+        <div className="mb-6 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
+            Mejora atención - Modo Selección
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            Nivel {currentLevel}
+          </p>
+        </div>
+
+        {/* Target Letters Card */}
+        <div className="mb-6">
+          <TargetLettersDisplay letters={targetLetters} />
+        </div>
+
+        {/* Progress */}
+        <div className="mb-4">
+          <GameProgress
+            selectedCount={selectedCount}
+            targetCount={targetCount}
+          />
+        </div>
+
+        {/* Timer and Score */}
+        <GameTimerScore elapsedTime={elapsedTime} score={score} />
+      </section>
+
+      {/* Game Area - Board + Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Game Board - Takes 2/3 on desktop */}
+        <div className="lg:col-span-2">
+          <GameBoard />
+        </div>
+
+        {/* Sidebar Controls - Takes 1/3 on desktop, full width on mobile */}
+        <div className="space-y-4">
+          {/* Game Controls */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+              Controles
+            </h3>
+
+            <GameSidebarControls
+              gameState={gameState}
+              canVerify={canVerify}
+              isChecking={isChecking}
+              showNameInput={showNameInput}
+              onVerify={handleVerify}
+              onNewGame={handleNewGame}
+              onReset={handleReset}
+              onReturn={() => onReturnToDashboard?.()}
+              onShowNameInput={() => setShowNameInput(true)}
+            />
+          </div>
+
+          {/* Leaderboard Name Input - Only when won and name input shown */}
+          {isWon && showNameInput && (
+            <div className="bg-success-50 dark:bg-success-900/20 rounded-2xl p-6 border border-success-200 dark:border-success-800">
+              <h3 className="text-lg font-semibold text-success-700 dark:text-success-300 mb-4 flex items-center gap-2">
+                <Trophy className="w-5 h-5" aria-hidden="true" />
+                ¡Guarda tu puntuación!
+              </h3>
+
+              <Input
+                label="Tu nombre"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Ingresa tu nombre"
+                maxLength={30}
+                className="mb-4"
+              />
+
+              <div className="flex flex-col gap-2">
+                <Button
+                  onClick={handleSubmitScore}
+                  disabled={!playerName.trim()}
+                  variant="success"
+                  className="w-full"
+                >
+                  Guardar Puntuación
+                </Button>
+                <Button
+                  onClick={() => {
+                    setShowNameInput(false);
+                    setPlayerName('');
+                  }}
+                  variant="ghost"
+                  className="w-full"
+                >
+                  Omitir
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Success/Error Messages */}
+          {isWon && !showNameInput && (
+            <div className="bg-success-50 dark:bg-success-900/20 rounded-xl p-4 border border-success-200 dark:border-success-800 text-center">
+              <p className="text-success-700 dark:text-success-300 font-semibold">
+                ¡Felicidades! ¡Completado!
+              </p>
+            </div>
+          )}
+
+          {isLost && (
+            <div className="bg-error-50 dark:bg-error-900/20 rounded-xl p-4 border border-error-200 dark:border-error-800 text-center">
+              <p className="text-error-700 dark:text-error-300 font-semibold">
+                ¡No te rindas! Inténtalo de nuevo.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
