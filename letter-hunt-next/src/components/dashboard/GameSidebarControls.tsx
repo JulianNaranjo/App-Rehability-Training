@@ -10,28 +10,38 @@
  */
 
 import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
 import { Check, RotateCcw, ArrowLeft, Play, Trophy } from 'lucide-react';
+import type { GameMode } from '@/types/game';
 
 interface GameSidebarControlsProps {
   /** Current game state */
   gameState: 'idle' | 'playing' | 'checking' | 'won' | 'lost' | 'paused';
+  /** Current game mode */
+  gameMode: GameMode;
   /** Whether verify action can be performed */
   canVerify: boolean;
   /** Whether verification is in progress */
   isChecking: boolean;
   /** Whether to show name input (for leaderboard) */
   showNameInput: boolean;
+  /** User's count in count mode */
+  userCount?: number;
   /** Callback for verify action */
   onVerify: () => void;
   /** Callback for new game action */
   onNewGame: () => void;
+  /** Callback for next level action */
+  onNextLevel?: () => void;
   /** Callback for reset action */
   onReset: () => void;
   /** Callback for return to dashboard */
   onReturn: () => void;
   /** Callback to show name input */
   onShowNameInput: () => void;
+  /** Callback for count input change */
+  onCountChange?: (value: string) => void;
   /** Additional CSS classes */
   className?: string;
 }
@@ -46,14 +56,18 @@ interface GameSidebarControlsProps {
  */
 export function GameSidebarControls({
   gameState,
+  gameMode,
   canVerify,
   isChecking,
   showNameInput,
+  userCount,
   onVerify,
   onNewGame,
+  onNextLevel,
   onReset,
   onReturn,
   onShowNameInput,
+  onCountChange,
   className,
 }: GameSidebarControlsProps) {
   const isPlaying = gameState === 'playing';
@@ -74,28 +88,57 @@ export function GameSidebarControls({
 
       {/* Playing State */}
       {isPlaying && (
-        <Button
-          onClick={onVerify}
-          disabled={!canVerify || checkingState}
-          loading={checkingState}
-          variant="primary"
-          className="w-full"
-        >
-          <Check className="w-4 h-4 mr-2" aria-hidden="true" />
-          {checkingState ? 'Verificando...' : 'Verificar'}
-        </Button>
+        <>
+          {/* Count Mode: Number Input + Verify Button */}
+          {gameMode === 'count' && (
+            <div className="space-y-2">
+              <Input
+                type="number"
+                min="0"
+                max="225"
+                placeholder="¿Cuántas letras ves?"
+                value={userCount || ''}
+                onChange={(e) => onCountChange?.(e.target.value)}
+                className="w-full"
+                aria-label="Ingresa el conteo de letras objetivo"
+              />
+            </div>
+          )}
+
+          <Button
+            onClick={onVerify}
+            disabled={!canVerify || checkingState}
+            loading={checkingState}
+            variant="primary"
+            className="w-full"
+          >
+            <Check className="w-4 h-4 mr-2" aria-hidden="true" />
+            {checkingState ? 'Verificando...' : 'Verificar'}
+          </Button>
+        </>
       )}
 
       {/* Won State */}
       {isWon && (
         <>
+          {/* Next Level - Only when won */}
           <Button
-            onClick={onNewGame}
+            onClick={onNextLevel}
             variant="primary"
             className="w-full"
           >
             <Play className="w-4 h-4 mr-2" aria-hidden="true" />
-            Nuevo Juego
+            Siguiente nivel
+          </Button>
+
+          {/* Play Again - Available for both win and lose */}
+          <Button
+            onClick={onNewGame}
+            variant="secondary"
+            className="w-full"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" aria-hidden="true" />
+            Jugar de nuevo
           </Button>
 
           {!showNameInput && (
@@ -119,7 +162,7 @@ export function GameSidebarControls({
           className="w-full"
         >
           <RotateCcw className="w-4 h-4 mr-2" aria-hidden="true" />
-          Intentar de Nuevo
+          Jugar de nuevo
         </Button>
       )}
 

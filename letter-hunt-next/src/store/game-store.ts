@@ -18,8 +18,7 @@ import {
   checkSelection, 
   calculateScore,
   calculateCountScore,
-  gameStorage,
-  debounce
+  gameStorage
 } from '@/lib/game-utils';
 import { soundManager } from '@/lib/sounds';
 
@@ -28,9 +27,9 @@ import { soundManager } from '@/lib/sounds';
  */
 const getLevelTargetTypes = (level: number): number => {
   if (level === 1) return 1;        // Nivel 1: 1 tipo de letra
-  if (level <= 3) return 2;        // Niveles 2-3: 2 tipos de letras  
-  if (level === 4) return 3;        // Nivel 4: 3 tipos de letras
-  return Math.min(4, 3 + Math.floor(level / 3)); // Niveles 5+: 3-4 tipos de letras (máximo 4)
+  if (level === 2) return 2;        // Nivel 2: 2 tipos de letras
+  if (level === 3) return 3;        // Nivel 3: 3 tipos de letras
+  return 4;                         // Nivel 4+: 4 tipos de letras (máximo)
 };
 
 /**
@@ -483,12 +482,12 @@ export const useGameStore = create<GameStore>()(
     },
     
     // Utility
-    updateElapsedTime: debounce(() => {
+    updateElapsedTime: () => {
       const { gameState, startTime } = get();
       if (gameState === 'playing' && startTime) {
         set({ elapsedTime: (Date.now() - startTime) / 1000 });
       }
-    }, 100),
+    },
   }))
 );
 
@@ -497,11 +496,6 @@ if (typeof window !== 'undefined') {
   useGameStore.getState().loadStats();
   useGameStore.getState().loadSettings();
   useGameStore.getState().loadLeaderboard();
-  
-  // Update elapsed time periodically
-  setInterval(() => {
-    useGameStore.getState().updateElapsedTime();
-  }, 100);
   
   // Save settings when they change
   useGameStore.subscribe(
