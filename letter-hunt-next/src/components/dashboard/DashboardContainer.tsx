@@ -12,39 +12,36 @@
 
 import { GameModeCard } from './GameModeCard';
 import { GameInstructions } from './GameInstructions';
-import { dashboardConfig } from '@/skills/dashboard/dashboard-logic';
-import { useGameStore } from '@/store/game-store';
+import { dashboardConfig, isAttentionGameMode } from '@/skills/dashboard/dashboard-logic';
 import { cn } from '@/lib/utils';
-import type { GameMode } from '@/types/game';
 
 interface DashboardContainerProps {
   className?: string;
-  onStartGame?: (mode: GameMode) => void;
 }
 
 /**
  * Dashboard Container - Main rehabilitation dashboard
  * 
  * Displays sections for attention and memory improvement
- * with interactive game mode cards.
+ * with interactive game mode cards that navigate to game pages.
  */
-export function DashboardContainer({ className, onStartGame }: DashboardContainerProps) {
-  const { generateNewGame } = useGameStore();
+export function DashboardContainer({ className }: DashboardContainerProps) {
+  /**
+   * Get the route URL for a game mode
+   */
+  const getModeHref = (modeId: string): string => {
+    if (isAttentionGameMode(modeId)) {
+      return `/game/${modeId}`;
+    }
+    // Memory modes - no route yet, return empty string
+    return '';
+  };
 
   /**
-   * Handle game mode selection
-   * Only handles attention modes that exist in game-store
+   * Check if a mode is available (implemented)
    */
-  const handleModeSelect = async (modeId: string) => {
-    if (modeId === 'selection' || modeId === 'count') {
-      // Valid GameMode - start the game
-      generateNewGame(1, undefined, modeId as GameMode);
-      onStartGame?.(modeId as GameMode);
-    } else {
-      // Memory modes - not yet implemented in game store
-      console.log(`Mode ${modeId} selected - implementation pending`);
-      // Could show a "coming soon" modal or alert
-    }
+  const isModeAvailable = (modeId: string): boolean => {
+    return isAttentionGameMode(modeId);
   };
 
   return (
@@ -83,7 +80,8 @@ export function DashboardContainer({ className, onStartGame }: DashboardContaine
                 <GameModeCard
                   key={mode.id}
                   mode={mode}
-                  onSelect={() => handleModeSelect(mode.id)}
+                  href={getModeHref(mode.id)}
+                  isComingSoon={!isModeAvailable(mode.id)}
                 />
               ))}
             </div>

@@ -9,6 +9,7 @@
  * @module GameBoardContainer
  */
 
+import { useRouter } from 'next/navigation';
 import { GameBoard } from '@/components/GameBoard';
 import { TargetLettersDisplay } from './TargetLettersDisplay';
 import { GameProgress } from './GameProgress';
@@ -24,8 +25,6 @@ import { Trophy } from 'lucide-react';
 interface GameBoardContainerProps {
   /** Additional CSS classes */
   className?: string;
-  /** Callback to return to dashboard */
-  onReturnToDashboard?: () => void;
 }
 
 /**
@@ -38,8 +37,8 @@ interface GameBoardContainerProps {
  */
 export function GameBoardContainer({
   className,
-  onReturnToDashboard,
 }: GameBoardContainerProps) {
+  const router = useRouter();
   const {
     targetLetters,
     selectedIndices,
@@ -119,6 +118,12 @@ export function GameBoardContainer({
     resetGame();
   }, [resetGame]);
 
+  // Handle return to dashboard - uses Next.js router
+  const handleReturnToDashboard = useCallback(() => {
+    resetGame();
+    router.push('/dashboard');
+  }, [resetGame, router]);
+
   // Handle submit score
   const handleSubmitScore = useCallback(() => {
     if (playerName.trim()) {
@@ -196,7 +201,7 @@ export function GameBoardContainer({
               onNewGame={handleNewGame}
               onNextLevel={handleNextLevel}
               onReset={handleReset}
-              onReturn={() => onReturnToDashboard?.()}
+              onReturn={handleReturnToDashboard}
               onShowNameInput={() => setShowNameInput(true)}
               onCountChange={handleCountChange}
             />
