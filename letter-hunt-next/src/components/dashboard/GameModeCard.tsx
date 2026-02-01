@@ -3,12 +3,13 @@
 /**
  * Game Mode Card Component
  * 
- * Interactive card for selecting a game mode.
+ * Interactive card for selecting a game mode using Next.js Link.
  * Features gradient background, icon, and hover effects.
  * 
  * @module GameModeCard
  */
 
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import type { GameModeConfig } from '@/skills/dashboard/dashboard-logic';
@@ -31,24 +32,25 @@ const iconMap: Record<string, LucideIcon> = {
 interface GameModeCardProps {
   /** Game mode configuration */
   mode: GameModeConfig;
-  /** Callback when card is selected */
-  onSelect: () => void;
-  /** Optional loading state */
-  isLoading?: boolean;
+  /** URL to navigate to when clicked */
+  href: string;
+  /** Whether the mode is coming soon (disabled) */
+  isComingSoon?: boolean;
   /** Additional CSS classes */
   className?: string;
 }
 
 /**
- * Game Mode Card - Interactive selection card
+ * Game Mode Card - Interactive selection card with Next.js Link
  * 
  * Displays a game mode with gradient background, icon,
- * and interactive hover/click states.
+ * and interactive hover/click states. Uses Next.js Link
+ * for client-side navigation.
  */
 export function GameModeCard({ 
   mode, 
-  onSelect, 
-  isLoading = false,
+  href,
+  isComingSoon = false,
   className 
 }: GameModeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
@@ -56,45 +58,8 @@ export function GameModeCard({
   // Get the icon component
   const IconComponent = iconMap[mode.icon];
 
-  return (
-    <button
-      onClick={onSelect}
-      disabled={isLoading}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={cn(
-        // Base styles
-        'relative w-full rounded-2xl p-6 md:p-8',
-        'transition-all duration-200 ease-out',
-        'focus:outline-none focus:ring-2 focus:ring-offset-2',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
-        
-        // Gradient background - using complete Tailwind classes
-        'bg-gradient-to-r',
-        mode.gradientFrom,
-        mode.gradientTo,
-        
-        // Hover effects - scale and shadow
-        'hover:scale-[1.02]',
-        
-        // Cursor
-        'cursor-pointer',
-        
-        // Text color for gradient backgrounds
-        'text-white',
-        
-        className
-      )}
-      aria-label={`Seleccionar ${mode.title}: ${mode.shortDescription}`}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onSelect();
-        }
-      }}
-    >
+  const cardContent = (
+    <>
       {/* Content Container */}
       <div className="flex flex-col items-center text-center">
         {/* Icon */}
@@ -122,11 +87,11 @@ export function GameModeCard({
           {mode.shortDescription}
         </p>
 
-        {/* Loading Indicator */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-2xl">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white" />
-          </div>
+        {/* Coming Soon Badge */}
+        {isComingSoon && (
+          <span className="mt-3 px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">
+            Próximamente
+          </span>
         )}
       </div>
 
@@ -139,6 +104,53 @@ export function GameModeCard({
         )}
         aria-hidden="true"
       />
-    </button>
+    </>
+  );
+
+  const cardClasses = cn(
+    // Base styles
+    'relative w-full rounded-2xl p-6 md:p-8',
+    'transition-all duration-200 ease-out',
+    'focus:outline-none focus:ring-2 focus:ring-offset-2',
+    
+    // Gradient background - using complete Tailwind classes
+    'bg-gradient-to-r',
+    mode.gradientFrom,
+    mode.gradientTo,
+    
+    // Hover effects - scale and shadow
+    isComingSoon ? 'opacity-60 cursor-not-allowed' : 'hover:scale-[1.02] cursor-pointer',
+    
+    // Text color for gradient backgrounds
+    'text-white',
+    
+    // Display as block for Link
+    'block text-center',
+    
+    className
+  );
+
+  if (isComingSoon) {
+    return (
+      <div
+        className={cardClasses}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {cardContent}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={cardClasses}
+      aria-label={`Jugar ${mode.title}: ${mode.shortDescription}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {cardContent}
+    </Link>
   );
 }
