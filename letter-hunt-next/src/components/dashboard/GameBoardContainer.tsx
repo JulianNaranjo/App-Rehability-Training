@@ -138,8 +138,13 @@ export function GameBoardContainer({
       >
         {/* Section Title */}
         <div className="mb-6 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">
-            Mejora atención - Modo Selección
+          <h2 className={cn(
+            "text-2xl md:text-3xl font-bold mb-2",
+            gameMode === 'count'
+              ? "text-secondary-600 dark:text-secondary-400"
+              : "text-primary-600 dark:text-primary-400"
+          )}>
+            Mejora atención - Modo {gameMode === 'count' ? 'Conteo' : 'Selección'}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 text-lg">
             Nivel {currentLevel}
@@ -148,16 +153,18 @@ export function GameBoardContainer({
 
         {/* Target Letters Card */}
         <div className="mb-6">
-          <TargetLettersDisplay letters={targetLetters} />
+          <TargetLettersDisplay letters={targetLetters} gameMode={gameMode} />
         </div>
 
-        {/* Progress */}
-        <div className="mb-4">
-          <GameProgress
-            selectedCount={selectedCount}
-            targetCount={targetCount}
-          />
-        </div>
+        {/* Progress - Only show in selection mode */}
+        {gameMode === 'selection' && (
+          <div className="mb-4">
+            <GameProgress
+              selectedCount={selectedCount}
+              targetCount={targetCount}
+            />
+          </div>
+        )}
 
         {/* Timer and Score */}
         <GameTimerScore elapsedTime={elapsedTime} score={score} />
