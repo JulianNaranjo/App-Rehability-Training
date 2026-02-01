@@ -110,7 +110,10 @@ export function GameSidebarControls({
             disabled={!canVerify || checkingState}
             loading={checkingState}
             variant="primary"
-            className="w-full"
+            className={cn(
+              'w-full',
+              gameMode === 'count' && 'bg-secondary-600 hover:bg-secondary-700 focus:ring-secondary-500 shadow-secondary-500/25'
+            )}
           >
             <Check className="w-4 h-4 mr-2" aria-hidden="true" />
             {checkingState ? 'Verificando...' : 'Verificar'}

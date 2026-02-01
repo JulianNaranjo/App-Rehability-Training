@@ -14,6 +14,8 @@ import { cn } from '@/lib/utils';
 interface TargetLettersDisplayProps {
   /** Array of target letters to display */
   letters: string[];
+  /** Current game mode to determine color scheme */
+  gameMode?: 'selection' | 'count';
   /** Additional CSS classes */
   className?: string;
 }
@@ -24,7 +26,7 @@ interface TargetLettersDisplayProps {
  * Displays target letters in a gradient card with the text
  * "Busca todas las letras: A, B, C"
  */
-export function TargetLettersDisplay({ letters, className }: TargetLettersDisplayProps) {
+export function TargetLettersDisplay({ letters, gameMode, className }: TargetLettersDisplayProps) {
   if (!letters || letters.length === 0) return null;
 
   const lettersText = letters.map(l => l.toUpperCase()).join(', ');
@@ -34,8 +36,11 @@ export function TargetLettersDisplay({ letters, className }: TargetLettersDispla
       className={cn(
         // Base card styles - matching dashboard cards
         'relative w-full rounded-2xl p-6 md:p-8',
-        'bg-gradient-to-r from-primary-500 to-primary-700',
         'text-white shadow-lg',
+        // Dynamic gradient based on game mode
+        gameMode === 'count'
+          ? 'bg-gradient-to-r from-secondary-500 to-secondary-700'
+          : 'bg-gradient-to-r from-primary-500 to-primary-700',
         className
       )}
       role="region"
