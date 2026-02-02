@@ -183,7 +183,8 @@ export const useGameStore = create<GameStore>()(
       const { board, targetLetters, solutionIndices } = generateGameBoard(
         DEFAULT_GAME_CONFIG, 
         targetTypes,
-        targetCount
+        targetCount,
+        currentLevel
       );
       
       const startTime = Date.now();
@@ -387,7 +388,8 @@ export const useGameStore = create<GameStore>()(
     nextLevel: () => {
       const currentLevel = get().currentLevel;
       const gameMode = get().gameMode;
-      const newLevel = currentLevel + 1;
+      // Cap at level 5 for now
+      const newLevel = Math.min(currentLevel + 1, 5);
       set({ currentLevel: newLevel });
       get().generateNewGame(newLevel, undefined, gameMode); // Will auto-calculate
     },

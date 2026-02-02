@@ -46,9 +46,10 @@ export function GameSettings({ className, onSettingsComplete }: GameSettingsProp
           <div className="font-semibold mb-2 text-gray-700 dark:text-gray-300">Sistema de Niveles:</div>
           <div className="space-y-1">
             <div>• Nivel 1: 1 letra objetivo</div>
-            <div>• Niveles 2-3: 2 letras objetivo</div>
-            <div>• Nivel 4: 3 letras objetivo</div>
-            <div>• Niveles 5+: 3-4 letras objetivo (máximo)</div>
+            <div>• Nivel 2: 2 letras objetivo</div>
+            <div>• Nivel 3: 3 letras objetivo</div>
+            <div>• Nivel 4: 4 letras objetivo</div>
+            <div>• Nivel 5: 4 números objetivo (0-9)</div>
           </div>
         </div>
         

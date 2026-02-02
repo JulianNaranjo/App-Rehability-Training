@@ -1,4 +1,4 @@
-import { GameConfig, BoardPosition, BoardIndex, TileStatus, isTargetLetter, ValidationResults } from '@/types/game';
+import { GameConfig, BoardPosition, BoardIndex, TileStatus, isTargetLetter, ValidationResults, NUMBERS } from '@/types/game';
 
 /**
  * Utility functions for game board manipulation and validation
@@ -105,59 +105,81 @@ export function getAdjacentPositions(position: BoardPosition, boardSize: number)
 }
 
 /**
- * Generate a game board with target letters
+ * Generate a game board with target letters or numbers
  */
 export function generateGameBoard(
   config: GameConfig,
   targetLetterTypes: number = 1,    // Number of different letter types (1-4)
-  targetLetterCount: number = 56     // Total target letters (25-30% of board)
+  targetLetterCount: number = 56,    // Total target letters (25-30% of board)
+  level: number = 1                 // Current level (level 5 uses numbers)
 ): { board: BoardArray; targetLetters: string[]; solutionIndices: SolutionSet } {
   const { BOARD_SIZE, ALPHABET } = config;
-  
-  // Select target letters randomly (the types to look for)
-  const shuffledAlphabet = fisherYatesShuffle(ALPHABET.split(''));
-  const targetLetters = shuffledAlphabet.slice(0, targetLetterTypes);
-  
-  // Create board with all non-target letters first
-  const availableLetters = ALPHABET.split('').filter(letter => !targetLetters.includes(letter));
   const totalTiles = BOARD_SIZE * BOARD_SIZE;
+  
+  // LEVEL 5: Use numbers as targets (4 unique numbers from 0-9)
+  const isLevel5 = level === 5;
+  
+  let targetItems: string[];
+  let availableFillers: string[];
+  
+  if (isLevel5) {
+    // Select 4 unique numbers randomly from 0-9
+    const shuffledNumbers = fisherYatesShuffle(NUMBERS.split(''));
+    targetItems = shuffledNumbers.slice(0, 4); // Exactly 4 unique numbers
+    
+    // Create filler pool: mix of letters (excluding nothing, all letters are valid) and non-target numbers
+    const allLetters = ALPHABET.split('');
+    const nonTargetNumbers = NUMBERS.split('').filter(num => !targetItems.includes(num));
+    // 50% letters, 50% non-target numbers for balanced distribution
+    availableFillers = [...allLetters, ...nonTargetNumbers];
+  } else {
+    // Levels 1-4: Use letters as targets
+    const shuffledAlphabet = fisherYatesShuffle(ALPHABET.split(''));
+    targetItems = shuffledAlphabet.slice(0, targetLetterTypes);
+    
+    // Create board with all non-target letters
+    availableFillers = ALPHABET.split('').filter(letter => !targetItems.includes(letter));
+  }
+  
+  // Fill board with filler items first
   const filledBoard: BoardArray = Array(totalTiles).fill(null).map(() => 
-    availableLetters[Math.floor(Math.random() * availableLetters.length)]
+    availableFillers[Math.floor(Math.random() * availableFillers.length)]
   );
   
-  // Randomly select positions for target letters
+  // Randomly select positions for target items
   const allIndices = Array.from({ length: totalTiles }, (_, i) => i);
   const targetIndices = new Set(
     fisherYatesShuffle(allIndices).slice(0, targetLetterCount)
   );
   
-  // Place target letters with RANDOM distribution between types
+  // Place target items with RANDOM distribution between types
   const board: BoardArray = [...filledBoard];
   const indicesArray = Array.from(targetIndices);
   indicesArray.forEach((index) => {
-    // Choose randomly which target letter type to place
-    const randomLetterIndex = Math.floor(Math.random() * targetLetters.length);
-    board[index] = targetLetters[randomLetterIndex];
+    // Choose randomly which target item type to place
+    const randomTargetIndex = Math.floor(Math.random() * targetItems.length);
+    board[index] = targetItems[randomTargetIndex];
   });
   
   // Log distribution for debugging
-  const distribution = targetLetters.map(letter => {
-    const count = indicesArray.filter(i => board[i] === letter).length;
-    return `${letter}: ${count}`;
+  const distribution = targetItems.map(item => {
+    const count = indicesArray.filter(i => board[i] === item).length;
+    return `${item}: ${count}`;
   });
   
-  console.log("🔢 GENERATE BOARD INPUTS:", { targetLetterTypes, targetLetterCount, config });
-  console.log('🎲 BOARD GENERATION:', {
+  console.log("🔢 GENERATE BOARD INPUTS:", { targetLetterTypes, targetLetterCount, level, isLevel5, config });
+  console.log(isLevel5 ? '🎲 LEVEL 5 BOARD GENERATION (NUMBERS):' : '🎲 BOARD GENERATION (LETTERS):', {
     targetLetterTypes,
     targetLetterCount,
     actualTargetCount: targetIndices.size,
-    targetLetters,
-    distribution
+    targetItems,
+    distribution,
+    level
   });
   
   return {
     board,
-    targetLetters,
+    targetLetters: targetItems,
     solutionIndices: targetIndices,
   };
 }

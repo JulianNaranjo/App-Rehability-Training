@@ -194,3 +194,6 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
   ALPHABET: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   ANIMATION_STAGGER_DELAY: 0.05,
 } as const;
+
+// Numbers for level 5
+export const NUMBERS = '0123456789' as const;

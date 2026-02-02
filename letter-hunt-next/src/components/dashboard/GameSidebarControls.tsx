@@ -28,6 +28,8 @@ interface GameSidebarControlsProps {
   showNameInput: boolean;
   /** User's count in count mode */
   userCount?: number;
+  /** Target letters/numbers to detect level 5 */
+  targetLetters?: string[];
   /** Callback for verify action */
   onVerify: () => void;
   /** Callback for new game action */
@@ -61,6 +63,7 @@ export function GameSidebarControls({
   isChecking,
   showNameInput,
   userCount,
+  targetLetters,
   onVerify,
   onNewGame,
   onNextLevel,
@@ -74,6 +77,9 @@ export function GameSidebarControls({
   const isWon = gameState === 'won';
   const isLost = gameState === 'lost';
   const checkingState = gameState === 'checking' || isChecking;
+  
+  // Check if these are numbers (level 5)
+  const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
 
   return (
     <div
@@ -96,11 +102,11 @@ export function GameSidebarControls({
                 type="number"
                 min="0"
                 max="225"
-                placeholder="¿Cuántas letras ves?"
+                placeholder={isNumbers ? "¿Cuántos números ves?" : "¿Cuántas letras ves?"}
                 value={userCount || ''}
                 onChange={(e) => onCountChange?.(e.target.value)}
                 className="w-full"
-                aria-label="Ingresa el conteo de letras objetivo"
+                aria-label={isNumbers ? "Ingresa el conteo de números objetivo" : "Ingresa el conteo de letras objetivo"}
               />
             </div>
           )}
