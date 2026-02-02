@@ -111,12 +111,13 @@ export function GameBoardContainer({
     nextLevel();
   }, [nextLevel]);
 
-  // Handle reset
+  // Handle reset - restart current level with new board
   const handleReset = useCallback(() => {
     setShowNameInput(false);
     setPlayerName('');
-    resetGame();
-  }, [resetGame]);
+    // Generate new game keeping current level and mode
+    generateNewGame(currentLevel, undefined, gameMode);
+  }, [generateNewGame, currentLevel, gameMode]);
 
   // Handle return to dashboard - uses Next.js router
   const handleReturnToDashboard = useCallback(() => {
