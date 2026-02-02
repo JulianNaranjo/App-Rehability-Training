@@ -10,7 +10,11 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug"
+    "test:e2e:debug": "playwright test --debug",
+    "test:sprite": "playwright test --config=testsprite_tests/playwright.config.ts",
+    "test:sprite:headed": "playwright test --config=testsprite_tests/playwright.config.ts --headed",
+    "test:sprite:ui": "playwright test --config=testsprite_tests/playwright.config.ts --ui",
+    "test:sprite:trace": "playwright show-report testsprite_tests/playwright-report"
   },
   "dependencies": {
     "clsx": "^2.1.1",
