@@ -8,14 +8,17 @@ interface GameInstructionProps {
 export function GameInstruction({ className }: GameInstructionProps) {
   const { targetLetters, gameState } = useGameStore();
 
+  // Check if these are numbers (level 5)
+  const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
+
   const getGameStateText = () => {
     switch (gameState) {
       case 'playing':
-        return 'Selecciona todas las letras que ves';
+        return isNumbers ? 'Selecciona todos los números que ves' : 'Selecciona todas las letras que ves';
       case 'checking':
         return 'Verificando tu respuesta...';
       case 'won':
-        return '¡Excelente! ¡Las encontraste todas!';
+        return isNumbers ? '¡Excelente! ¡Los encontraste todos!' : '¡Excelente! ¡Las encontraste todas!';
       case 'lost':
         return 'Intenta de nuevo';
       default:
@@ -26,7 +29,7 @@ export function GameInstruction({ className }: GameInstructionProps) {
   if (!targetLetters || targetLetters.length === 0) return null;
 
   const isSingleLetter = targetLetters.length === 1;
-  const instructionText = isSingleLetter ? 'Señale todas las' : 'Señale todas las';
+  const instructionText = isSingleLetter ? 'Señala el' : (isNumbers ? 'Señala todos los' : 'Señala todas las');
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -50,7 +53,7 @@ export function GameInstruction({ className }: GameInstructionProps) {
         </div>
         {gameState === 'playing' && (
           <div className="text-center mt-4 text-blue-100">
-            <span className="text-sm">Pulsa las letras para seleccionarlas</span>
+            <span className="text-sm">{isNumbers ? 'Pulsa los números para seleccionarlos' : 'Pulsa las letras para seleccionarlas'}</span>
           </div>
         )}
       </div>

@@ -197,6 +197,7 @@ export function GameBoardContainer({
               isChecking={isChecking}
               showNameInput={showNameInput}
               userCount={userCount}
+              targetLetters={targetLetters}
               onVerify={handleVerify}
               onNewGame={handleNewGame}
               onNextLevel={handleNextLevel}

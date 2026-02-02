@@ -1,0 +1,164 @@
+{
+  "tech_stack": [
+    "TypeScript 5+",
+    "Next.js 16.1.6",
+    "React 19.2.3",
+    "Tailwind CSS v4",
+    "Zustand 5.0.10",
+    "Lucide React 0.563.0"
+  ],
+  "features": [
+    {
+      "name": "Game State Management",
+      "description": "Centralized game state using Zustand with subscribeWithSelector middleware. Manages game board, selections, validation, scoring, and level progression across 5 levels with increasing difficulty.",
+      "files": ["src/store/game-store.ts"]
+    },
+    {
+      "name": "Game Logic Engine",
+      "description": "Core game mechanics including board generation with Fisher-Yates shuffle, letter/number placement (25-30% targets), selection validation, scoring calculation, and tile status determination.",
+      "files": ["src/lib/game-utils.ts"]
+    },
+    {
+      "name": "Type System",
+      "description": "Comprehensive TypeScript types for game state, config, validation results, game modes, stats, leaderboard, themes, and accessibility settings. Includes type guards and utility types.",
+      "files": ["src/types/game.ts"]
+    },
+    {
+      "name": "Dashboard Container",
+      "description": "Main rehabilitation program dashboard with two sections: Attention (implemented) and Memory (coming soon). Displays game mode cards with navigation.",
+      "files": ["src/components/dashboard/DashboardContainer.tsx"]
+    },
+    {
+      "name": "Game Mode Cards",
+      "description": "Interactive cards for selecting game modes (Selection and Count) with gradient styling, icons, and descriptions. Links to game routes.",
+      "files": ["src/components/dashboard/GameModeCard.tsx"]
+    },
+    {
+      "name": "Game Board",
+      "description": "15x15 interactive grid (225 tiles) for letter selection mode. Supports keyboard navigation, tile animations, selection limits, and accessibility features.",
+      "files": ["src/components/GameBoard.tsx"]
+    },
+    {
+      "name": "Game Tiles",
+      "description": "Individual interactive tiles with letter display, selection states (selected/correct/wrong), animations, and keyboard support.",
+      "files": ["src/components/GameTile.tsx"]
+    },
+    {
+      "name": "Game Board Container",
+      "description": "Main game interface layout combining game board, target letters display, progress tracking, timer/score, and sidebar controls.",
+      "files": ["src/components/dashboard/GameBoardContainer.tsx"]
+    },
+    {
+      "name": "Target Letters Display",
+      "description": "Shows the target letter(s) players need to find. Changes based on level (1-4 letters, level 5 uses numbers).",
+      "files": ["src/components/dashboard/TargetLettersDisplay.tsx"]
+    },
+    {
+      "name": "Game Progress",
+      "description": "Visual progress indicator showing selected tiles vs total target tiles count.",
+      "files": ["src/components/dashboard/GameProgress.tsx"]
+    },
+    {
+      "name": "Game Timer & Score",
+      "description": "Real-time timer and score display with elapsed time tracking and final score calculation.",
+      "files": ["src/components/dashboard/GameTimerScore.tsx"]
+    },
+    {
+      "name": "Game Sidebar Controls",
+      "description": "Control panel with check answer button, reset game, pause/resume, and game state feedback messages.",
+      "files": ["src/components/dashboard/GameSidebarControls.tsx"]
+    },
+    {
+      "name": "Game Instructions",
+      "description": "Mode-specific instruction cards displayed on dashboard explaining how to play each game mode.",
+      "files": ["src/components/dashboard/GameInstructions.tsx"]
+    },
+    {
+      "name": "Game Controls",
+      "description": "Count mode input interface with number validation and submission for counting target letters.",
+      "files": ["src/components/GameControls.tsx"]
+    },
+    {
+      "name": "Game Settings",
+      "description": "Settings panel for configuring themes, sound, animations, accessibility options (reduced motion, high contrast, font size).",
+      "files": ["src/components/GameSettings.tsx"]
+    },
+    {
+      "name": "Game Instruction Panel",
+      "description": "Modal/panel displaying detailed game instructions and help text.",
+      "files": ["src/components/GameInstruction.tsx"]
+    },
+    {
+      "name": "Leaderboard",
+      "description": "Top 10 scores display with player names, scores, times, and dates. Persists to localStorage.",
+      "files": ["src/components/Leaderboard.tsx", "src/app/leaderboard/page.tsx"]
+    },
+    {
+      "name": "Navigation",
+      "description": "Top navigation bar with links to Dashboard, Game, Leaderboard, Settings, and Profile pages.",
+      "files": ["src/components/navigation/Navbar.tsx"]
+    },
+    {
+      "name": "Dashboard Logic",
+      "description": "Pure logic module defining dashboard configuration, game mode types, section layouts, and type guards for attention vs memory modes.",
+      "files": ["src/skills/dashboard/dashboard-logic.ts"]
+    },
+    {
+      "name": "Sound Manager",
+      "description": "Web Audio API-based sound effects for game events (tile select, win, lose, new game) with mute/unmute control.",
+      "files": ["src/lib/sounds.ts"]
+    },
+    {
+      "name": "Utility Functions",
+      "description": "Helper utilities including class name merging with clsx and tailwind-merge.",
+      "files": ["src/lib/utils.ts"]
+    },
+    {
+      "name": "UI Components",
+      "description": "Reusable UI components: Button, Card, Input, Slider, Switch with consistent styling and accessibility.",
+      "files": [
+        "src/components/ui/Button.tsx",
+        "src/components/ui/Card.tsx",
+        "src/components/ui/Input.tsx",
+        "src/components/ui/Slider.tsx",
+        "src/components/ui/Switch.tsx",
+        "src/components/ui/index.ts"
+      ]
+    },
+    {
+      "name": "Local Storage Persistence",
+      "description": "Type-safe localStorage wrapper for persisting game stats, settings, and leaderboard data.",
+      "files": ["src/lib/game-utils.ts"]
+    },
+    {
+      "name": "Game Pages",
+      "description": "Dynamic routes for game modes (/game/selection, /game/count) with mode initialization and cleanup.",
+      "files": ["src/app/game/[mode]/page.tsx"]
+    },
+    {
+      "name": "Settings Page",
+      "description": "Dedicated settings page for configuring game preferences and accessibility options.",
+      "files": ["src/app/settings/page.tsx"]
+    },
+    {
+      "name": "Profile Page",
+      "description": "User profile page for viewing personal stats and achievements.",
+      "files": ["src/app/profile/page.tsx"]
+    },
+    {
+      "name": "Root Layout",
+      "description": "Application root layout with global styles, fonts, metadata, and navigation.",
+      "files": ["src/app/layout.tsx"]
+    },
+    {
+      "name": "Home Redirect",
+      "description": "Root route that redirects to dashboard for better UX.",
+      "files": ["src/app/page.tsx"]
+    },
+    {
+      "name": "Dashboard Page",
+      "description": "Dashboard route rendering the main rehabilitation program interface.",
+      "files": ["src/app/dashboard/page.tsx"]
+    }
+  ]
+}

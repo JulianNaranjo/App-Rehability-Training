@@ -30,6 +30,9 @@ export function TargetLettersDisplay({ letters, gameMode, className }: TargetLet
   if (!letters || letters.length === 0) return null;
 
   const lettersText = letters.map(l => l.toUpperCase()).join(', ');
+  
+  // Check if these are numbers (level 5)
+  const isNumbers = letters.length > 0 && /^[0-9]$/.test(letters[0]);
 
   return (
     <div
@@ -44,12 +47,12 @@ export function TargetLettersDisplay({ letters, gameMode, className }: TargetLet
         className
       )}
       role="region"
-      aria-label="Letras objetivo"
+      aria-label={isNumbers ? "Números objetivo" : "Letras objetivo"}
     >
       <div className="text-center">
         {/* Label */}
         <p className="text-sm md:text-base opacity-90 mb-3">
-          Busca todas las letras:
+          {isNumbers ? 'Busca todos los números:' : 'Busca todas las letras:'}
         </p>
         
         {/* Letters */}

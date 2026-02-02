@@ -56,6 +56,9 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
   const selectedCount = selectedIndices.size;
   const remainingCount = targetCount - selectedCount;
   
+  // Check if these are numbers (level 5)
+  const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
+  
   // Calculate maximum allowed input based on board size and max percentage
   const boardSize = 15; // From DEFAULT_GAME_CONFIG.BOARD_SIZE
   const maxPossibleLetters = Math.round(boardSize * boardSize * 0.30); // 30% of board
@@ -143,7 +146,7 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
             ) : (
               <>
                 <p className="text-lg text-neutral-300 mb-2">
-                  Busca las letras <span className="font-bold text-primary-400">
+                  {isNumbers ? 'Busca los números' : 'Busca las letras'} <span className="font-bold text-primary-400">
                     {targetLetters.join(', ')}
                   </span>
                 </p>
@@ -166,8 +169,12 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
             <p className="text-neutral-300">
               {(gameMode === 'selection' || (gameMode === 'count' && userCount === targetCount))
                 ? gameMode === 'selection'
-                  ? `¡Encontraste todas las ${targetCount} letras en ${formatTime(elapsedTime)}!`
-                  : `¡Contaste correctamente ${userCount === 1 ? userCount + ' letra' : userCount + ' letras'} en ${formatTime(elapsedTime)}!`
+                  ? (isNumbers 
+                      ? `¡Encontraste todos los ${targetCount} números en ${formatTime(elapsedTime)}!`
+                      : `¡Encontraste todas las ${targetCount} letras en ${formatTime(elapsedTime)}!`)
+                  : (isNumbers
+                      ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' número' : userCount + ' números'} en ${formatTime(elapsedTime)}!`
+                      : `¡Contaste correctamente ${userCount === 1 ? userCount + ' letra' : userCount + ' letras'} en ${formatTime(elapsedTime)}!`)
                 : null
               }
             </p>
@@ -183,7 +190,9 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
             <p className="text-neutral-300">
               {gameMode === 'selection' 
                 ? (validationResults 
-                  ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} letras correctas de ${validationResults.totalCount} posibles`
+                  ? (isNumbers
+                      ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} números correctos de ${validationResults.totalCount} posibles`
+                      : `¡Sigue intentando! Tuviste ${validationResults.correctCount} letras correctas de ${validationResults.totalCount} posibles`)
                   : `¡Sigue intentando! Revisa tu selección.`
                 )
                 : `¡Vuelve a intentarlo! Había ${targetCount} ${targetLetters.join(', ')} en el tablero.`
@@ -211,7 +220,7 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
               <div className="flex gap-2 w-full">
                 <Input
                   type="number"
-                  placeholder="¿Cuántas letras hay?"
+                  placeholder={isNumbers ? "¿Cuántos números hay?" : "¿Cuántas letras hay?"}
                   value={userCount || ''}
                   onChange={(e) => setUserCount(parseInt(e.target.value) || 0)}
                   min={0}

@@ -1,0 +1,14 @@
+{
+  "status": "init",
+  "scope": "codebase",
+  "type": "frontend",
+  "localEndpoint": "http://localhost:3000/",
+  "serverPort": 58129,
+  "executionArgs": {
+    "projectName": "letter-hunt-next",
+    "projectPath": "C:\\Users\\jandr\\Documents\\letter-hunt\\letter-hunt\\letter-hunt-next",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {}
+  }
+}
