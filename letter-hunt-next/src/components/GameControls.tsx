@@ -4,7 +4,7 @@ import { Input } from './ui/Input';
 import { useGameStore } from '@/store/game-store';
 import { cn, formatTime } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { SYMBOLS } from '@/types/game';
+import { SYMBOLS, EVEN_NUMBERS, ODD_NUMBERS } from '@/types/game';
 
 interface GameControlsProps {
   className?: string;
@@ -60,6 +60,9 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
   // Check if these are numbers (level 5) or symbols (level 6)
   const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
   const isSymbols = targetLetters && targetLetters.length > 0 && SYMBOLS.includes(targetLetters[0]);
+  // Check if level 7 (even numbers) or level 8 (odd numbers)
+  const isEven = targetLetters && targetLetters.length === 5 && targetLetters.every(l => EVEN_NUMBERS.includes(l));
+  const isOdd = targetLetters && targetLetters.length === 5 && targetLetters.every(l => ODD_NUMBERS.includes(l));
   
   // Calculate maximum allowed input based on board size and max percentage
   const boardSize = 15; // From DEFAULT_GAME_CONFIG.BOARD_SIZE
@@ -148,8 +151,16 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
             ) : (
               <>
                 <p className="text-lg text-neutral-300 mb-2">
-                  {isSymbols ? 'Busca los símbolos' : isNumbers ? 'Busca los números' : 'Busca las letras'} <span className="font-bold text-primary-400">
-                    {targetLetters.join(', ')}
+                  {isEven 
+                    ? 'Busca los números pares' 
+                    : isOdd 
+                      ? 'Busca los números impares' 
+                      : isSymbols 
+                        ? 'Busca los símbolos' 
+                        : isNumbers 
+                          ? 'Busca los números' 
+                          : 'Busca las letras'} <span className="font-bold text-primary-400">
+                    {(isEven || isOdd) ? '' : targetLetters.join(', ')}
                   </span>
                 </p>
 
@@ -171,16 +182,24 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
             <p className="text-neutral-300">
               {(gameMode === 'selection' || (gameMode === 'count' && userCount === targetCount))
                 ? gameMode === 'selection'
-                  ? (isSymbols
-                      ? `¡Encontraste todos los ${targetCount} símbolos en ${formatTime(elapsedTime)}!`
-                      : isNumbers 
-                        ? `¡Encontraste todos los ${targetCount} números en ${formatTime(elapsedTime)}!`
-                        : `¡Encontraste todas las ${targetCount} letras en ${formatTime(elapsedTime)}!`)
-                  : (isSymbols
-                      ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' símbolo' : userCount + ' símbolos'} en ${formatTime(elapsedTime)}!`
-                      : isNumbers
-                        ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' número' : userCount + ' números'} en ${formatTime(elapsedTime)}!`
-                        : `¡Contaste correctamente ${userCount === 1 ? userCount + ' letra' : userCount + ' letras'} en ${formatTime(elapsedTime)}!`)
+                  ? (isEven
+                      ? `¡Encontraste todos los ${targetCount} números pares en ${formatTime(elapsedTime)}!`
+                      : isOdd
+                        ? `¡Encontraste todos los ${targetCount} números impares en ${formatTime(elapsedTime)}!`
+                        : isSymbols
+                          ? `¡Encontraste todos los ${targetCount} símbolos en ${formatTime(elapsedTime)}!`
+                          : isNumbers 
+                            ? `¡Encontraste todos los ${targetCount} números en ${formatTime(elapsedTime)}!`
+                            : `¡Encontraste todas las ${targetCount} letras en ${formatTime(elapsedTime)}!`)
+                  : (isEven
+                      ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' número par' : userCount + ' números pares'} en ${formatTime(elapsedTime)}!`
+                      : isOdd
+                        ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' número impar' : userCount + ' números impares'} en ${formatTime(elapsedTime)}!`
+                      : isSymbols
+                        ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' símbolo' : userCount + ' símbolos'} en ${formatTime(elapsedTime)}!`
+                        : isNumbers
+                          ? `¡Contaste correctamente ${userCount === 1 ? userCount + ' número' : userCount + ' números'} en ${formatTime(elapsedTime)}!`
+                          : `¡Contaste correctamente ${userCount === 1 ? userCount + ' letra' : userCount + ' letras'} en ${formatTime(elapsedTime)}!`)
                 : null
               }
             </p>
@@ -196,14 +215,18 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
             <p className="text-neutral-300">
               {gameMode === 'selection' 
                 ? (validationResults 
-                  ? (isSymbols
-                      ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} símbolos correctos de ${validationResults.totalCount} posibles`
-                      : isNumbers
-                        ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} números correctos de ${validationResults.totalCount} posibles`
-                        : `¡Sigue intentando! Tuviste ${validationResults.correctCount} letras correctas de ${validationResults.totalCount} posibles`)
+                  ? (isEven
+                      ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} números pares correctos de ${validationResults.totalCount} posibles`
+                      : isOdd
+                        ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} números impares correctos de ${validationResults.totalCount} posibles`
+                      : isSymbols
+                        ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} símbolos correctos de ${validationResults.totalCount} posibles`
+                        : isNumbers
+                          ? `¡Sigue intentando! Tuviste ${validationResults.correctCount} números correctos de ${validationResults.totalCount} posibles`
+                          : `¡Sigue intentando! Tuviste ${validationResults.correctCount} letras correctas de ${validationResults.totalCount} posibles`)
                   : `¡Sigue intentando! Revisa tu selección.`
                 )
-                : `¡Vuelve a intentarlo! Había ${targetCount} ${targetLetters.join(', ')} en el tablero.`
+                : `¡Vuelve a intentarlo! Había ${targetCount} números ${isEven ? 'pares' : isOdd ? 'impares' : targetLetters.join(', ')} en el tablero.`
               }
             </p>
           </div>
@@ -228,7 +251,7 @@ export function GameControls({ className, onNewGame, onSettings }: GameControlsP
               <div className="flex gap-2 w-full">
                 <Input
                   type="number"
-                  placeholder={isSymbols ? "¿Cuántos símbolos hay?" : isNumbers ? "¿Cuántos números hay?" : "¿Cuántas letras hay?"}
+                  placeholder={isEven ? "¿Cuántos números pares hay?" : isOdd ? "¿Cuántos números impares hay?" : isSymbols ? "¿Cuántos símbolos hay?" : isNumbers ? "¿Cuántos números hay?" : "¿Cuántas letras hay?"}
                   value={userCount || ''}
                   onChange={(e) => setUserCount(parseInt(e.target.value) || 0)}
                   min={0}

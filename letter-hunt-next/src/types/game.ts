@@ -200,3 +200,7 @@ export const NUMBERS = '0123456789' as const;
 
 // Symbols for level 6 (15 different mathematical/special symbols)
 export const SYMBOLS = '◊∞µ꜡€αβ÷π≠¥×£ⱷ∑√' as const;
+
+// Even and Odd numbers for levels 7 and 8
+export const EVEN_NUMBERS = '02468' as const;
+export const ODD_NUMBERS = '13579' as const;
