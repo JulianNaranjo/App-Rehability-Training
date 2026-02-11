@@ -1,31 +1,62 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Clinical Canvas */
+  --background: #f8f9fa;
+  --foreground: #1a1a2e;
+  
+  /* Surface elevations */
+  --surface: #ffffff;
+  --surface-elevated: #f1f3f4;
+  
+  /* Text hierarchy - Clinical blue-gray */
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a5568;
+  --text-tertiary: #718096;
+  --text-muted: #a0aec0;
+  
+  /* Border scale */
+  --border-soft: rgba(26, 26, 46, 0.06);
+  --border-standard: rgba(26, 26, 46, 0.10);
+  --border-emphasis: rgba(26, 26, 46, 0.15);
+  --border-focus: rgba(139, 92, 246, 0.4);
 }
 
 @theme inline {
   /* Base colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   
-  /* Primary (Violet/Purple) palette */
-  --color-primary-50: #f5f3ff;
-  --color-primary-100: #ede9fe;
-  --color-primary-200: #ddd6fe;
-  --color-primary-300: #c4b5fd;
-  --color-primary-400: #a78bfa;
-  --color-primary-500: #8b5cf6;
-  --color-primary-600: #7c3aed;
-  --color-primary-700: #6d28d9;
-  --color-primary-800: #5b21b6;
-  --color-primary-900: #4c1d95;
-  --color-primary-950: #2e1065;
+  /* Text hierarchy */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-muted: var(--text-muted);
   
-  /* Secondary (Teal) palette */
+  /* Border colors */
+  --color-border-soft: var(--border-soft);
+  --color-border-standard: var(--border-standard);
+  --color-border-emphasis: var(--border-emphasis);
+  --color-border-focus: var(--border-focus);
+  
+  /* Primary (Desaturated Violet - Clinical) */
+  --color-primary-50: #faf9ff;
+  --color-primary-100: #f3f0ff;
+  --color-primary-200: #e9e3ff;
+  --color-primary-300: #d4ccff;
+  --color-primary-400: #b8a6ff;
+  --color-primary-500: #9578ff;
+  --color-primary-600: #7c5ce6;
+  --color-primary-700: #6548c2;
+  --color-primary-800: #523a9e;
+  --color-primary-900: #45327a;
+  --color-primary-950: #2a1c52;
+  
+  /* Secondary (Muted Teal - Clinical) */
   --color-secondary-50: #f0fdfa;
   --color-secondary-100: #ccfbf1;
   --color-secondary-200: #99f6e4;
@@ -38,46 +69,46 @@
   --color-secondary-900: #134e4a;
   --color-secondary-950: #042f2e;
   
-  /* Success (Green) palette */
+  /* Success (Forest Green - Clinical) */
   --color-success-50: #f0fdf4;
   --color-success-100: #dcfce7;
   --color-success-200: #bbf7d0;
   --color-success-300: #86efac;
   --color-success-400: #4ade80;
-  --color-success-500: #10b981;
-  --color-success-600: #059669;
-  --color-success-700: #047857;
-  --color-success-800: #065f46;
-  --color-success-900: #064e3b;
+  --color-success-500: #059669;
+  --color-success-600: #047857;
+  --color-success-700: #065f46;
+  --color-success-800: #064e3b;
+  --color-success-900: #022c22;
   --color-success-950: #022c22;
   
-  /* Error (Red) palette */
+  /* Error (Terracotta - Clinical) */
   --color-error-50: #fef2f2;
   --color-error-100: #fee2e2;
   --color-error-200: #fecaca;
   --color-error-300: #fca5a5;
   --color-error-400: #f87171;
-  --color-error-500: #ef4444;
-  --color-error-600: #dc2626;
-  --color-error-700: #b91c1c;
-  --color-error-800: #991b1b;
-  --color-error-900: #7f1d1d;
+  --color-error-500: #dc2626;
+  --color-error-600: #b91c1c;
+  --color-error-700: #991b1b;
+  --color-error-800: #7f1d1d;
+  --color-error-900: #450a0a;
   --color-error-950: #450a0a;
   
-  /* Warning (Amber) palette */
+  /* Warning (Muted Amber - Clinical) */
   --color-warning-50: #fffbeb;
   --color-warning-100: #fef3c7;
   --color-warning-200: #fde68a;
   --color-warning-300: #fcd34d;
   --color-warning-400: #fbbf24;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
-  --color-warning-800: #92400e;
-  --color-warning-900: #78350f;
+  --color-warning-500: #d97706;
+  --color-warning-600: #b45309;
+  --color-warning-700: #92400e;
+  --color-warning-800: #78350f;
+  --color-warning-900: #451a03;
   --color-warning-950: #451a03;
   
-  /* Neutral (Gray) palette */
+  /* Neutral (Warm Gray - Clinical) */
   --color-neutral-50: #fafafa;
   --color-neutral-100: #f5f5f5;
   --color-neutral-200: #e5e5e5;
@@ -90,22 +121,71 @@
   --color-neutral-900: #171717;
   --color-neutral-950: #0a0a0a;
   
-  /* Custom shadows */
-  --box-shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
-  --box-shadow-glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
-  --box-shadow-glow-error: 0 0 20px rgba(239, 68, 68, 0.3);
-  --box-shadow-glow-warning: 0 0 20px rgba(245, 158, 11, 0.3);
+  /* Clinical Shadows */
+  --box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+  --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  
+  /* Focus glows */
+  --box-shadow-glow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  --box-shadow-glow-success: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  --box-shadow-glow-error: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  --box-shadow-glow-warning: 0 0 0 3px rgba(217, 119, 6, 0.15);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode - Clinical */
+    --background: #0f0f14;
+    --foreground: #f1f5f9;
+    --surface: #18181f;
+    --surface-elevated: #1e1e28;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+    --text-muted: #475569;
+    --border-soft: rgba(241, 245, 249, 0.06);
+    --border-standard: rgba(241, 245, 249, 0.10);
+    --border-emphasis: rgba(241, 245, 249, 0.15);
+    --border-focus: rgba(139, 92, 246, 0.4);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Clinical animations */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out forwards;
+}
+
+/* Focus ring - Clinical */
+.focus-clinical:focus-visible {
+  outline: none;
+  box-shadow: var(--box-shadow-glow);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--text-primary);
 }

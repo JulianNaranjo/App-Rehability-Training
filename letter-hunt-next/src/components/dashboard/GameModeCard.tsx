@@ -1,10 +1,10 @@
 'use client';
 
 /**
- * Game Mode Card Component
+ * Game Mode Card Component - Clinical Design
  * 
  * Interactive card for selecting a game mode using Next.js Link.
- * Features gradient background, icon, and hover effects.
+ * Features clean clinical styling with subtle interactions.
  * 
  * @module GameModeCard
  */
@@ -30,23 +30,12 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 interface GameModeCardProps {
-  /** Game mode configuration */
   mode: GameModeConfig;
-  /** URL to navigate to when clicked */
   href: string;
-  /** Whether the mode is coming soon (disabled) */
   isComingSoon?: boolean;
-  /** Additional CSS classes */
   className?: string;
 }
 
-/**
- * Game Mode Card - Interactive selection card with Next.js Link
- * 
- * Displays a game mode with gradient background, icon,
- * and interactive hover/click states. Uses Next.js Link
- * for client-side navigation.
- */
 export function GameModeCard({ 
   mode, 
   href,
@@ -55,77 +44,59 @@ export function GameModeCard({
 }: GameModeCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   
-  // Get the icon component
   const IconComponent = iconMap[mode.icon];
 
   const cardContent = (
     <>
-      {/* Content Container */}
       <div className="flex flex-col items-center text-center">
-        {/* Icon */}
+        {/* Icon - Clinical subtle */}
         <div className="mb-4">
           {IconComponent && (
-            <IconComponent 
-              className={cn(
-                'w-12 h-12 md:w-16 md:h-16',
-                'transition-transform duration-200',
-                isHovered && 'scale-110'
-              )}
-              strokeWidth={1.5}
-              aria-hidden="true"
-            />
+            <div className={cn(
+              'p-3 rounded-xl transition-all duration-200',
+              'bg-primary-50 text-primary-600',
+              isHovered && !isComingSoon && 'bg-primary-100'
+            )}>
+              <IconComponent 
+                className="w-8 h-8"
+                strokeWidth={1.5}
+                aria-hidden="true"
+              />
+            </div>
           )}
         </div>
 
-        {/* Title */}
-        <h3 className="text-xl md:text-2xl font-bold mb-2">
+        {/* Title - Clinical hierarchy */}
+        <h3 className="text-lg font-semibold text-text-primary mb-2">
           {mode.title}
         </h3>
 
-        {/* Short Description */}
-        <p className="text-sm md:text-base opacity-90">
+        {/* Description - Clinical secondary */}
+        <p className="text-sm text-text-secondary leading-relaxed">
           {mode.shortDescription}
         </p>
 
-        {/* Coming Soon Badge */}
+        {/* Coming Soon Badge - Clinical */}
         {isComingSoon && (
-          <span className="mt-3 px-3 py-1 bg-white/20 rounded-full text-xs font-semibold">
+          <span className="mt-4 px-3 py-1 bg-surface-elevated border border-border-soft rounded-full text-xs font-medium text-text-tertiary">
             Próximamente
           </span>
         )}
       </div>
-
-      {/* Hover Glow Effect */}
-      <div 
-        className={cn(
-          'absolute inset-0 rounded-2xl transition-opacity duration-200',
-          'bg-white/10',
-          isHovered ? 'opacity-100' : 'opacity-0'
-        )}
-        aria-hidden="true"
-      />
     </>
   );
 
   const cardClasses = cn(
-    // Base styles
-    'relative w-full rounded-2xl p-6 md:p-8',
+    // Base styles - Clinical clean
+    'relative w-full rounded-xl p-6',
+    'bg-surface border border-border-standard',
     'transition-all duration-200 ease-out',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
+    'focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2',
     
-    // Gradient background - using complete Tailwind classes
-    'bg-gradient-to-r',
-    mode.gradientFrom,
-    mode.gradientTo,
-    
-    // Hover effects - scale and shadow
-    isComingSoon ? 'opacity-60 cursor-not-allowed' : 'hover:scale-[1.02] cursor-pointer',
-    
-    // Text color for gradient backgrounds
-    'text-white',
-    
-    // Display as block for Link
-    'block text-center',
+    // Hover effects - Clinical subtle
+    isComingSoon 
+      ? 'opacity-60 cursor-not-allowed' 
+      : 'hover:border-primary-300 hover:shadow-sm cursor-pointer',
     
     className
   );

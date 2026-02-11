@@ -24,22 +24,10 @@ export function GameBoard({
     solutionIndices,
     gameState,
     gameMode,
-    settings,
   } = useGameStore();
   
   const [animatingTiles, setAnimatingTiles] = useState<Set<number>>(new Set());
   const [animationTypes, setAnimationTypes] = useState<Map<number, string>>(new Map());
-  
-  // DEBUG: Log al inicio de cada render para ver el estado
-  if (gameState === 'checking' || gameState === 'won' || gameState === 'lost') {
-    console.log('[DEBUG RENDER] Estado:', {
-      gameState,
-      selectedIndices: Array.from(selectedIndices),
-      solutionIndices: Array.from(solutionIndices),
-      selectedIndicesSize: selectedIndices.size,
-      solutionIndicesSize: solutionIndices.size
-    });
-  }
   
   const handleTileClick = (index: number) => {
     if (gameState !== 'playing' || gameMode !== 'selection') return;
@@ -48,28 +36,23 @@ export function GameBoard({
     const targetCount = solutionIndices.size;
     const selectedCount = selectedIndices.size;
     
-    // Límite: No permitir seleccionar más del total de letras target
     if (!isCurrentlySelected && selectedCount >= targetCount) {
-      return; // Límite alcanzado, no permitir más selecciones
+      return;
     }
     
-    // Add animation
     setAnimatingTiles(prev => new Set(prev).add(index));
     setAnimationTypes(prev => new Map(prev).set(index, isCurrentlySelected ? 'deselect' : 'select'));
     
-    // Handle tile selection/deselection
     if (isCurrentlySelected) {
       useGameStore.getState().deselectTile(index);
     } else {
       useGameStore.getState().selectTile(index);
     }
     
-    // Call optional callback
     if (onTileSelect) {
       onTileSelect(index);
     }
     
-    // Remove animation after it completes
     setTimeout(() => {
       setAnimatingTiles(prev => {
         const newSet = new Set(prev);
@@ -121,25 +104,16 @@ export function GameBoard({
         return;
     }
     
-    // Focus new tile
     const newTile = document.querySelector(`[data-tile-index="${newIndex}"]`) as HTMLElement;
     if (newTile) {
       newTile.focus();
     }
   };
   
-  // Handle answer checking animations
   useEffect(() => {
-    console.log('[DEBUG useEffect] EJECUTANDO useEffect, gameState:', gameState);
     if (gameState === 'checking') {
       const correctTiles: number[] = [];
       const wrongTiles: number[] = [];
-      
-      console.log('[DEBUG useEffect] Iniciando cálculo:', {
-        gameState,
-        selectedIndicesSize: selectedIndices.size,
-        solutionIndicesSize: solutionIndices.size
-      });
       
       solutionIndices.forEach(index => {
         if (selectedIndices.has(index)) {
@@ -153,14 +127,6 @@ export function GameBoard({
         }
       });
       
-      console.log('[DEBUG useEffect] Resultados:', {
-        correctTiles,
-        wrongTiles,
-        correctCount: correctTiles.length,
-        wrongCount: wrongTiles.length
-      });
-      
-      // Animate correct tiles first
       correctTiles.forEach((index, i) => {
         setTimeout(() => {
           setAnimatingTiles(prev => new Set(prev).add(index));
@@ -168,7 +134,6 @@ export function GameBoard({
         }, i * 50);
       });
       
-      // Animate wrong tiles after
       wrongTiles.forEach((index, i) => {
         setTimeout(() => {
           setAnimatingTiles(prev => new Set(prev).add(index));
@@ -176,7 +141,6 @@ export function GameBoard({
         }, correctTiles.length * 50 + i * 50);
       });
       
-      // Clear animations after completion
       setTimeout(() => {
         setAnimatingTiles(new Set());
         setAnimationTypes(new Map());
@@ -189,11 +153,11 @@ export function GameBoard({
   return (
     <div 
       className={cn(
-        // Grid container
-        'relative w-full max-w-4xl mx-auto aspect-square',
-        'grid gap-1 p-4 rounded-2xl',
-        'bg-white border-2 border-gray-300 shadow-lg',
-        'focus:outline-none focus:ring-2 focus:ring-primary-500',
+        // Grid container - Clinical clean
+        'relative w-full max-w-4xl mx-auto',
+        'grid gap-1 p-4 rounded-xl',
+        'bg-surface border border-border-standard',
+        'focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2',
         gridCols,
         className
       )}
@@ -203,22 +167,6 @@ export function GameBoard({
       tabIndex={gameState === 'playing' ? 0 : -1}
     >
       {board.map((letter, index) => {
-        // DEBUG: Log para diagnosticar el problema
-        const isSelected = selectedIndices.has(index);
-        const isTarget = solutionIndices.has(index);
-        
-        if (gameState === 'checking' || gameState === 'won' || gameState === 'lost') {
-          console.log(`[DEBUG] Tile ${index}:`, {
-            letter,
-            isSelected,
-            isTarget,
-            gameState,
-            selectedIndicesSize: selectedIndices.size,
-            solutionIndicesSize: solutionIndices.size
-          });
-        }
-        
-        // Calcular el status basado en el estado actual del juego
         const status = getTileStatus(
           index,
           letter,
@@ -227,10 +175,6 @@ export function GameBoard({
           solutionIndices,
           gameState
         );
-        
-        if (gameState === 'checking' || gameState === 'won' || gameState === 'lost') {
-          console.log(`[DEBUG] Tile ${index} status:`, status);
-        }
         
         const isAnimating = animatingTiles.has(index);
         const animationType = animationTypes.get(index) as any;

@@ -1,11 +1,10 @@
 'use client';
 
 /**
- * Dashboard Container Component
+ * Dashboard Container Component - Clinical Design
  * 
- * Main dashboard layout containing all rehabilitation sections.
- * Implements the "Mejora atención" and "Mejorar memoria" sections
- * with game mode cards and instructions.
+ * Main dashboard layout with clean clinical styling.
+ * Implements the "Mejora atención" and "Mejorar memoria" sections.
  * 
  * @module DashboardContainer
  */
@@ -14,68 +13,72 @@ import { GameModeCard } from './GameModeCard';
 import { GameInstructions } from './GameInstructions';
 import { dashboardConfig, isAttentionGameMode } from '@/skills/dashboard/dashboard-logic';
 import { cn } from '@/lib/utils';
+import { Brain, Sparkles } from 'lucide-react';
 
 interface DashboardContainerProps {
   className?: string;
 }
 
-/**
- * Dashboard Container - Main rehabilitation dashboard
- * 
- * Displays sections for attention and memory improvement
- * with interactive game mode cards that navigate to game pages.
- */
 export function DashboardContainer({ className }: DashboardContainerProps) {
-  /**
-   * Get the route URL for a game mode
-   */
   const getModeHref = (modeId: string): string => {
     if (isAttentionGameMode(modeId)) {
       return `/game/${modeId}`;
     }
-    // Memory modes - no route yet, return empty string
     return '';
   };
 
-  /**
-   * Check if a mode is available (implemented)
-   */
   const isModeAvailable = (modeId: string): boolean => {
     return isAttentionGameMode(modeId);
   };
 
   return (
-    <div className={cn('space-y-8', className)}>
-      {/* Dashboard Title */}
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+    <div className={cn('space-y-12', className)}>
+      {/* Dashboard Header - Clinical */}
+      <header className="text-center py-8">
+        <div className="inline-flex items-center gap-3 mb-4">
+          <div className="p-2 rounded-lg bg-primary-50">
+            <Brain className="w-6 h-6 text-primary-600" strokeWidth={1.5} />
+          </div>
+          <span className="text-sm font-medium text-text-secondary uppercase tracking-wider">
+            Rehabilitación Cognitiva
+          </span>
+        </div>
+        <h1 className="text-3xl md:text-4xl font-semibold text-text-primary tracking-tight">
           {dashboardConfig.appTitle}
         </h1>
+        <p className="mt-3 text-text-secondary max-w-2xl mx-auto">
+          Ejercicios diseñados para mejorar la atención y memoria de manera estructurada y progresiva.
+        </p>
       </header>
 
-      {/* Sections */}
-      <div className="space-y-12">
+      {/* Sections - Clinical spacing */}
+      <div className="space-y-10">
         {dashboardConfig.sections.map((section) => (
           <section
             key={section.id}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8"
+            className="bg-surface border border-border-standard rounded-xl p-6 md:p-8"
             aria-labelledby={`section-${section.id}`}
           >
-            {/* Section Header */}
-            <div className="mb-6">
-              <h2
-                id={`section-${section.id}`}
-                className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-2"
-              >
-                {section.title}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 text-lg">
+            {/* Section Header - Clinical hierarchy */}
+            <div className="mb-8 pb-6 border-b border-border-soft">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-1.5 rounded-md bg-surface-elevated">
+                  <Sparkles className="w-4 h-4 text-primary-500" strokeWidth={1.5} />
+                </div>
+                <h2
+                  id={`section-${section.id}`}
+                  className="text-xl md:text-2xl font-semibold text-text-primary"
+                >
+                  {section.title}
+                </h2>
+              </div>
+              <p className="text-text-secondary text-base pl-8">
                 {section.description}
               </p>
             </div>
 
-            {/* Game Mode Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* Game Mode Cards Grid - Clinical spacing */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {section.gameModes.map((mode) => (
                 <GameModeCard
                   key={mode.id}
@@ -86,18 +89,18 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
               ))}
             </div>
 
-            {/* Instructions */}
-            <div className="space-y-4">
+            {/* Instructions - Clinical subtle */}
+            <div className="space-y-3">
               {section.gameModes.map((mode) => (
                 <GameInstructions
                   key={`${section.id}-${mode.id}`}
                   mode={mode}
-                  bgLight={section.instructionBgLight}
-                  bgDark={section.instructionBgDark}
-                  textLight={section.instructionTextLight}
-                  textDark={section.instructionTextDark}
-                  titleLight={section.instructionTitleLight}
-                  titleDark={section.instructionTitleDark}
+                  bgLight="bg-surface-elevated"
+                  bgDark="bg-surface-elevated"
+                  textLight="text-text-secondary"
+                  textDark="text-text-secondary"
+                  titleLight="text-text-primary"
+                  titleDark="text-text-primary"
                 />
               ))}
             </div>

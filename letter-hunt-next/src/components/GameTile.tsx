@@ -27,28 +27,28 @@ export function GameTile({
   const [isPressed, setIsPressed] = useState(false);
   
   const tileSizes = {
-    sm: 'text-sm p-2 min-w-[2rem] min-h-[2rem]',
-    md: 'text-base p-3 min-w-[3rem] min-h-[3rem]', 
-    lg: 'text-lg p-4 min-w-[4rem] min-h-[4rem]',
+    sm: 'text-sm p-1.5 min-w-[1.75rem] min-h-[1.75rem]',
+    md: 'text-sm p-2 min-w-[2.25rem] min-h-[2.25rem]', 
+    lg: 'text-base p-3 min-w-[3rem] min-h-[3rem]',
   };
   
   const getStatusStyles = () => {
     switch (status) {
       case 'selected':
-        // Fondo violeta, TEXTO NEGRO (siempre negro)
-        return 'bg-primary-500 text-gray-900 border-2 border-primary-600 shadow-lg';
+        // Clinical: Soft violet background with border
+        return 'bg-primary-100 text-text-primary border border-primary-300';
       case 'correct':
-        // Fondo verde, TEXTO NEGRO
-        return 'bg-success text-gray-900 border-2 border-success';
+        // Clinical: Soft green background
+        return 'bg-success-50 text-text-primary border border-success-400';
       case 'wrong':
-        // Fondo rojo, TEXTO NEGRO
-        return 'bg-error text-gray-900 border-2 border-error animate-shake';
+        // Clinical: Soft red background
+        return 'bg-error-50 text-text-primary border border-error-400';
       case 'target':
-        // IDÉNTICO al estado normal - sin pistas visuales
-        return 'bg-white text-gray-900 border-2 border-gray-800 shadow-sm';
+        // Clinical: Same as default, no visual hints
+        return 'bg-surface text-text-primary border border-border-standard';
       default:
-        // Estado normal: Fondo blanco, TEXTO NEGRO
-        return 'bg-white text-gray-900 border-2 border-gray-800 shadow-sm';
+        // Clinical: Clean white tile with subtle border
+        return 'bg-surface text-text-primary border border-border-soft hover:border-border-standard';
     }
   };
   
@@ -61,9 +61,9 @@ export function GameTile({
       case 'deselect':
         return 'animate-tile-deselect';
       case 'correct':
-        return 'animate-correct';
+        return 'animate-correct-clinical';
       case 'wrong':
-        return 'animate-wrong';
+        return 'animate-wrong-clinical';
       case 'celebrate':
         return 'animate-celebrate';
       default:
@@ -83,43 +83,51 @@ export function GameTile({
       onMouseLeave={handleMouseLeave}
       disabled={disabled}
       className={cn(
-        // Base styles
-        'relative rounded-xl font-bold transition-all duration-200',
-        'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-neutral-950',
-        'hover:scale-105 active:scale-95',
+        // Base styles - Clinical clean
+        'relative rounded-lg font-medium transition-all duration-150 ease-out',
+        'focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-1',
         
         // Size
         tileSizes[size],
         
-        // Status
+        // Status - Clinical colors
         getStatusStyles(),
         
         // Animations
         getAnimationClasses(),
         
-        // Interaction states
-        isPressed && !disabled && 'scale-95',
-        disabled && 'cursor-not-allowed opacity-50',
+        // Interaction states - Clinical subtle
+        isPressed && !disabled && 'scale-[0.97]',
+        disabled && 'cursor-not-allowed opacity-40',
         
-        // Hint glow
-        showHint && status === 'target' && 'animate-pulse ring-2 ring-warning ring-opacity-50'
+        // Selected state enhancement
+        status === 'selected' && 'ring-2 ring-primary-300 ring-offset-1',
+        
+        // Hint - Clinical subtle pulse
+        showHint && status === 'target' && 'animate-pulse-soft'
       )}
       aria-label={`Tile ${index + 1}: ${letter || 'empty'}`}
       role="gridcell"
+      tabIndex={disabled ? -1 : 0}
     >
       {/* Letter content */}
-      <span className="relative z-10">
+      <span className="relative z-10 select-none">
         {letter}
       </span>
       
-      {/* Overlay effects */}
-      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/0 via-white/10 to-white/0 opacity-0 hover:opacity-100 transition-opacity duration-300" />
+      {/* Clinical focus glow overlay */}
+      {status === 'selected' && (
+        <div className="absolute inset-0 rounded-lg bg-primary-400/5 animate-pulse-soft" />
+      )}
       
-      {/* Success ripple effect */}
+      {/* Success indicator - Clinical subtle */}
       {status === 'correct' && (
-        <div className="absolute inset-0 rounded-xl">
-          <div className="absolute inset-0 bg-success/30 animate-ping" />
-        </div>
+        <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-success-500" />
+      )}
+      
+      {/* Error indicator - Clinical subtle */}
+      {status === 'wrong' && (
+        <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-error-500" />
       )}
     </button>
   );
