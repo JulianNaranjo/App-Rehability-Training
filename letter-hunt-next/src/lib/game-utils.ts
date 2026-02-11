@@ -1,4 +1,4 @@
-import { GameConfig, BoardPosition, BoardIndex, TileStatus, isTargetLetter, ValidationResults, NUMBERS, SYMBOLS } from '@/types/game';
+import { GameConfig, BoardPosition, BoardIndex, TileStatus, isTargetLetter, ValidationResults, NUMBERS, SYMBOLS, EVEN_NUMBERS, ODD_NUMBERS } from '@/types/game';
 
 /**
  * Utility functions for game board manipulation and validation
@@ -120,6 +120,10 @@ export function generateGameBoard(
   const isLevel5 = level === 5;
   // LEVEL 6: Use symbols as targets (4 unique symbols from 15 available)
   const isLevel6 = level === 6;
+  // LEVEL 7: Use even numbers as targets (0, 2, 4, 6, 8)
+  const isLevel7 = level === 7;
+  // LEVEL 8: Use odd numbers as targets (1, 3, 5, 7, 9)
+  const isLevel8 = level === 8;
   
   let targetItems: string[];
   let availableFillers: string[];
@@ -142,6 +146,16 @@ export function generateGameBoard(
     // Create filler pool: only non-target symbols (no letters, no numbers)
     const nonTargetSymbols = SYMBOLS.split('').filter(sym => !targetItems.includes(sym));
     availableFillers = nonTargetSymbols;
+  } else if (isLevel7) {
+    // LEVEL 7: All even numbers are targets
+    targetItems = EVEN_NUMBERS.split(''); // ['0', '2', '4', '6', '8']
+    // Fillers: odd numbers only
+    availableFillers = ODD_NUMBERS.split(''); // ['1', '3', '5', '7', '9']
+  } else if (isLevel8) {
+    // LEVEL 8: All odd numbers are targets
+    targetItems = ODD_NUMBERS.split(''); // ['1', '3', '5', '7', '9']
+    // Fillers: even numbers only
+    availableFillers = EVEN_NUMBERS.split(''); // ['0', '2', '4', '6', '8']
   } else {
     // Levels 1-4: Use letters as targets
     const shuffledAlphabet = fisherYatesShuffle(ALPHABET.split(''));
@@ -177,8 +191,10 @@ export function generateGameBoard(
     return `${item}: ${count}`;
   });
   
-  console.log("🔢 GENERATE BOARD INPUTS:", { targetLetterTypes, targetLetterCount, level, isLevel5, isLevel6, config });
-  const levelLabel = isLevel6 ? '🎲 LEVEL 6 BOARD GENERATION (SYMBOLS):' : 
+  console.log("🔢 GENERATE BOARD INPUTS:", { targetLetterTypes, targetLetterCount, level, isLevel5, isLevel6, isLevel7, isLevel8, config });
+  const levelLabel = isLevel8 ? '🎲 LEVEL 8 BOARD GENERATION (ODD NUMBERS):' :
+                     isLevel7 ? '🎲 LEVEL 7 BOARD GENERATION (EVEN NUMBERS):' :
+                     isLevel6 ? '🎲 LEVEL 6 BOARD GENERATION (SYMBOLS):' : 
                      isLevel5 ? '🎲 LEVEL 5 BOARD GENERATION (NUMBERS):' : 
                      '🎲 BOARD GENERATION (LETTERS):';
   console.log(levelLabel, {

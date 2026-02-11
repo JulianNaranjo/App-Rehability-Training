@@ -1,6 +1,6 @@
 import { useGameStore } from '@/store/game-store';
 import { cn } from '@/lib/utils';
-import { SYMBOLS } from '@/types/game';
+import { SYMBOLS, EVEN_NUMBERS, ODD_NUMBERS } from '@/types/game';
 
 interface GameInstructionProps {
   className?: string;
@@ -13,6 +13,20 @@ function isSymbol(char: string): boolean {
   return SYMBOLS.includes(char);
 }
 
+/**
+ * Check if targets are even numbers (level 7)
+ */
+function isEvenLevel(letters: string[]): boolean {
+  return letters.length === 5 && letters.every(l => EVEN_NUMBERS.includes(l));
+}
+
+/**
+ * Check if targets are odd numbers (level 8)
+ */
+function isOddLevel(letters: string[]): boolean {
+  return letters.length === 5 && letters.every(l => ODD_NUMBERS.includes(l));
+}
+
 export function GameInstruction({ className }: GameInstructionProps) {
   const { targetLetters, gameState } = useGameStore();
 
@@ -20,16 +34,23 @@ export function GameInstruction({ className }: GameInstructionProps) {
   const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
   // Check if these are symbols (level 6)
   const isSymbols = targetLetters && targetLetters.length > 0 && isSymbol(targetLetters[0]);
+  // Check if level 7 (even numbers) or level 8 (odd numbers)
+  const isEven = targetLetters && isEvenLevel(targetLetters);
+  const isOdd = targetLetters && isOddLevel(targetLetters);
 
   const getGameStateText = () => {
     switch (gameState) {
       case 'playing':
+        if (isEven) return 'Selecciona todos los números pares que ves';
+        if (isOdd) return 'Selecciona todos los números impares que ves';
         if (isSymbols) return 'Selecciona todos los símbolos que ves';
         if (isNumbers) return 'Selecciona todos los números que ves';
         return 'Selecciona todas las letras que ves';
       case 'checking':
         return 'Verificando tu respuesta...';
       case 'won':
+        if (isEven) return '¡Excelente! ¡Encontraste todos los números pares!';
+        if (isOdd) return '¡Excelente! ¡Encontraste todos los números impares!';
         if (isSymbols) return '¡Excelente! ¡Los encontraste todos!';
         if (isNumbers) return '¡Excelente! ¡Los encontraste todos!';
         return '¡Excelente! ¡Las encontraste todas!';
@@ -42,9 +63,15 @@ export function GameInstruction({ className }: GameInstructionProps) {
 
   if (!targetLetters || targetLetters.length === 0) return null;
 
-  const isSingleLetter = targetLetters.length === 1;
+  // For levels 7 and 8, don't show individual letters (no hints)
+  const showLetters = !isEven && !isOdd;
+  
   let instructionText;
-  if (isSingleLetter) {
+  if (isEven) {
+    instructionText = 'Señala todos los números pares';
+  } else if (isOdd) {
+    instructionText = 'Señala todos los números impares';
+  } else if (targetLetters.length === 1) {
     instructionText = 'Señala el';
   } else if (isSymbols) {
     instructionText = 'Señala todos los';
@@ -61,30 +88,36 @@ export function GameInstruction({ className }: GameInstructionProps) {
         <div className="text-lg font-semibold mb-3">
           {instructionText}
         </div>
-        <div className="flex justify-center gap-4">
-          {targetLetters.map((letter, index) => (
-            <div
-              key={index}
-              className={cn(
-                "font-black bg-white rounded-xl p-6 md:p-8 inline-block shadow-md animate-pulse transform hover:scale-110 transition-transform text-blue-600",
-                isSymbols && "text-7xl md:text-9xl"
-              )}
-            >
-              {isSymbol(letter) ? letter : letter.toUpperCase()}
-            </div>
-          ))}
-          {!isSingleLetter && (
-            <div className="flex items-center text-2xl font-bold">y</div>
-          )}
-        </div>
+        {showLetters && (
+          <div className="flex justify-center gap-4">
+            {targetLetters.map((letter, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "font-black bg-white rounded-xl p-6 md:p-8 inline-block shadow-md animate-pulse transform hover:scale-110 transition-transform text-blue-600",
+                  isSymbols && "text-7xl md:text-9xl"
+                )}
+              >
+                {isSymbol(letter) ? letter : letter.toUpperCase()}
+              </div>
+            ))}
+            {targetLetters.length > 1 && (
+              <div className="flex items-center text-2xl font-bold">y</div>
+            )}
+          </div>
+        )}
         {gameState === 'playing' && (
           <div className="text-center mt-4 text-blue-100">
             <span className="text-sm">
-              {isSymbols 
-                ? 'Pulsa los símbolos para seleccionarlos' 
-                : isNumbers 
-                  ? 'Pulsa los números para seleccionarlos' 
-                  : 'Pulsa las letras para seleccionarlas'}
+              {isEven 
+                ? 'Pulsa los números pares para seleccionarlos'
+                : isOdd 
+                  ? 'Pulsa los números impares para seleccionarlos'
+                  : isSymbols 
+                    ? 'Pulsa los símbolos para seleccionarlos' 
+                    : isNumbers 
+                      ? 'Pulsa los números para seleccionarlos' 
+                      : 'Pulsa las letras para seleccionarlas'}
             </span>
           </div>
         )}

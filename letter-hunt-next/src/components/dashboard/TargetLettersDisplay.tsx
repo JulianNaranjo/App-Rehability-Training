@@ -10,7 +10,7 @@
  */
 
 import { cn } from '@/lib/utils';
-import { SYMBOLS } from '@/types/game';
+import { SYMBOLS, EVEN_NUMBERS, ODD_NUMBERS } from '@/types/game';
 
 interface TargetLettersDisplayProps {
   /** Array of target letters to display */
@@ -29,6 +29,20 @@ function isSymbol(char: string): boolean {
 }
 
 /**
+ * Check if targets are even numbers (level 7)
+ */
+function isEvenLevel(letters: string[]): boolean {
+  return letters.length === 5 && letters.every(l => EVEN_NUMBERS.includes(l));
+}
+
+/**
+ * Check if targets are odd numbers (level 8)
+ */
+function isOddLevel(letters: string[]): boolean {
+  return letters.length === 5 && letters.every(l => ODD_NUMBERS.includes(l));
+}
+
+/**
  * Target Letters Display - Card showing all targets to find
  * 
  * Displays target letters/numbers/symbols in a gradient card with the text
@@ -41,6 +55,9 @@ export function TargetLettersDisplay({ letters, gameMode, className }: TargetLet
   const isNumbers = letters.length > 0 && /^[0-9]$/.test(letters[0]);
   // Check if these are symbols (level 6)
   const isSymbols = letters.length > 0 && isSymbol(letters[0]);
+  // Check if level 7 (even numbers) or level 8 (odd numbers)
+  const isEven = isEvenLevel(letters);
+  const isOdd = isOddLevel(letters);
   
   // Don't apply toUpperCase() to symbols - they should be displayed as-is
   const lettersText = letters.map(l => isSymbol(l) ? l : l.toUpperCase()).join(', ');
@@ -63,16 +80,26 @@ export function TargetLettersDisplay({ letters, gameMode, className }: TargetLet
       <div className="text-center">
         {/* Label */}
         <p className="text-sm md:text-base opacity-90 mb-3">
-          {isSymbols ? 'Busca todos los símbolos:' : isNumbers ? 'Busca todos los números:' : 'Busca todas las letras:'}
+          {isEven 
+            ? 'Busca todos los números pares:' 
+            : isOdd 
+              ? 'Busca todos los números impares:' 
+              : isSymbols 
+                ? 'Busca todos los símbolos:' 
+                : isNumbers 
+                  ? 'Busca todos los números:' 
+                  : 'Busca todas las letras:'}
         </p>
         
-        {/* Letters/Numbers/Symbols */}
-        <p className={cn(
-          "font-bold tracking-wider",
-          isSymbols ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl"
-        )}>
-          {lettersText}
-        </p>
+        {/* Letters/Numbers/Symbols - No hints for levels 7 and 8 */}
+        {!isEven && !isOdd && (
+          <p className={cn(
+            "font-bold tracking-wider",
+            isSymbols ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl"
+          )}>
+            {lettersText}
+          </p>
+        )}
       </div>
     </div>
   );

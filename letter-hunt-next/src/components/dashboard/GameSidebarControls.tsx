@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
 import { Check, RotateCcw, ArrowLeft, Play, Trophy } from 'lucide-react';
 import type { GameMode } from '@/types/game';
-import { SYMBOLS } from '@/types/game';
+import { SYMBOLS, EVEN_NUMBERS, ODD_NUMBERS } from '@/types/game';
 
 interface GameSidebarControlsProps {
   /** Current game state */
@@ -82,6 +82,9 @@ export function GameSidebarControls({
   // Check if these are numbers (level 5) or symbols (level 6)
   const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
   const isSymbols = targetLetters && targetLetters.length > 0 && SYMBOLS.includes(targetLetters[0]);
+  // Check if level 7 (even numbers) or level 8 (odd numbers)
+  const isEven = targetLetters && targetLetters.length === 5 && targetLetters.every(l => EVEN_NUMBERS.includes(l));
+  const isOdd = targetLetters && targetLetters.length === 5 && targetLetters.every(l => ODD_NUMBERS.includes(l));
 
   return (
     <div
@@ -104,11 +107,11 @@ export function GameSidebarControls({
                 type="number"
                 min="0"
                 max="225"
-                placeholder={isSymbols ? "¿Cuántos símbolos ves?" : isNumbers ? "¿Cuántos números ves?" : "¿Cuántas letras ves?"}
+                placeholder={isEven ? "¿Cuántos números pares ves?" : isOdd ? "¿Cuántos números impares ves?" : isSymbols ? "¿Cuántos símbolos ves?" : isNumbers ? "¿Cuántos números ves?" : "¿Cuántas letras ves?"}
                 value={userCount || ''}
                 onChange={(e) => onCountChange?.(e.target.value)}
                 className="w-full"
-                aria-label={isSymbols ? "Ingresa el conteo de símbolos objetivo" : isNumbers ? "Ingresa el conteo de números objetivo" : "Ingresa el conteo de letras objetivo"}
+                aria-label={isEven ? "Ingresa el conteo de números pares" : isOdd ? "Ingresa el conteo de números impares" : isSymbols ? "Ingresa el conteo de símbolos objetivo" : isNumbers ? "Ingresa el conteo de números objetivo" : "Ingresa el conteo de letras objetivo"}
               />
             </div>
           )}
