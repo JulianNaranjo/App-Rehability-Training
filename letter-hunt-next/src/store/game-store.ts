@@ -388,8 +388,8 @@ export const useGameStore = create<GameStore>()(
     nextLevel: () => {
       const currentLevel = get().currentLevel;
       const gameMode = get().gameMode;
-      // Cap at level 5 for now
-      const newLevel = Math.min(currentLevel + 1, 5);
+      // Cap at level 6 (includes symbols level)
+      const newLevel = Math.min(currentLevel + 1, 6);
       set({ currentLevel: newLevel });
       get().generateNewGame(newLevel, undefined, gameMode); // Will auto-calculate
     },

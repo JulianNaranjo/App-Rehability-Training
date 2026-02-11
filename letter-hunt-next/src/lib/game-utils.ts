@@ -1,4 +1,4 @@
-import { GameConfig, BoardPosition, BoardIndex, TileStatus, isTargetLetter, ValidationResults, NUMBERS } from '@/types/game';
+import { GameConfig, BoardPosition, BoardIndex, TileStatus, isTargetLetter, ValidationResults, NUMBERS, SYMBOLS } from '@/types/game';
 
 /**
  * Utility functions for game board manipulation and validation
@@ -118,6 +118,8 @@ export function generateGameBoard(
   
   // LEVEL 5: Use numbers as targets (4 unique numbers from 0-9)
   const isLevel5 = level === 5;
+  // LEVEL 6: Use symbols as targets (4 unique symbols from 15 available)
+  const isLevel6 = level === 6;
   
   let targetItems: string[];
   let availableFillers: string[];
@@ -132,6 +134,14 @@ export function generateGameBoard(
     const nonTargetNumbers = NUMBERS.split('').filter(num => !targetItems.includes(num));
     // 50% letters, 50% non-target numbers for balanced distribution
     availableFillers = [...allLetters, ...nonTargetNumbers];
+  } else if (isLevel6) {
+    // LEVEL 6: Use symbols as targets (4 unique symbols from 15 available)
+    const shuffledSymbols = fisherYatesShuffle(SYMBOLS.split(''));
+    targetItems = shuffledSymbols.slice(0, 4); // Exactly 4 unique symbols
+    
+    // Create filler pool: only non-target symbols (no letters, no numbers)
+    const nonTargetSymbols = SYMBOLS.split('').filter(sym => !targetItems.includes(sym));
+    availableFillers = nonTargetSymbols;
   } else {
     // Levels 1-4: Use letters as targets
     const shuffledAlphabet = fisherYatesShuffle(ALPHABET.split(''));
@@ -167,8 +177,11 @@ export function generateGameBoard(
     return `${item}: ${count}`;
   });
   
-  console.log("🔢 GENERATE BOARD INPUTS:", { targetLetterTypes, targetLetterCount, level, isLevel5, config });
-  console.log(isLevel5 ? '🎲 LEVEL 5 BOARD GENERATION (NUMBERS):' : '🎲 BOARD GENERATION (LETTERS):', {
+  console.log("🔢 GENERATE BOARD INPUTS:", { targetLetterTypes, targetLetterCount, level, isLevel5, isLevel6, config });
+  const levelLabel = isLevel6 ? '🎲 LEVEL 6 BOARD GENERATION (SYMBOLS):' : 
+                     isLevel5 ? '🎲 LEVEL 5 BOARD GENERATION (NUMBERS):' : 
+                     '🎲 BOARD GENERATION (LETTERS):';
+  console.log(levelLabel, {
     targetLetterTypes,
     targetLetterCount,
     actualTargetCount: targetIndices.size,
