@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import { SYMBOLS } from '@/types/game';
 
 interface GameTileProps {
   letter: string;
@@ -110,8 +111,11 @@ export function GameTile({
       role="gridcell"
       tabIndex={disabled ? -1 : 0}
     >
-      {/* Letter content */}
-      <span className="relative z-10 select-none">
+      {/* Letter content - Larger font for symbols */}
+      <span className={cn(
+        "relative z-10 select-none",
+        SYMBOLS.includes(letter) && "text-lg font-bold"
+      )}>
         {letter}
       </span>
       

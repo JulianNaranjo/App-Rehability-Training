@@ -197,3 +197,6 @@ export const DEFAULT_GAME_CONFIG: GameConfig = {
 
 // Numbers for level 5
 export const NUMBERS = '0123456789' as const;
+
+// Symbols for level 6 (15 different mathematical/special symbols)
+export const SYMBOLS = '◊∞µ꜡€αβ÷π≠¥×£ⱷ∑√' as const;

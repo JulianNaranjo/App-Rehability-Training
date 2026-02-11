@@ -55,6 +55,7 @@ export function GameBoardContainer({
     resetGame,
     addToLeaderboard,
     setUserCount,
+    setLevel,
   } = useGameStore();
 
   const [isChecking, setIsChecking] = useState(false);
@@ -155,6 +156,26 @@ export function GameBoardContainer({
           <p className="text-gray-600 dark:text-gray-400 text-lg">
             Nivel {currentLevel}
           </p>
+          
+          {/* TEMPORAL: Selector de nivel para testing */}
+          <div className="mt-4 inline-block">
+            <label className="block text-sm text-gray-500 mb-1">Seleccionar nivel (temporal):</label>
+            <select
+              value={currentLevel}
+              onChange={(e) => {
+                const newLevel = parseInt(e.target.value, 10);
+                setLevel(newLevel);
+                generateNewGame(newLevel, undefined, gameMode);
+              }}
+              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              {[1, 2, 3, 4, 5, 6].map((level) => (
+                <option key={level} value={level}>
+                  Nivel {level} {level === 6 ? '(Símbolos)' : level === 5 ? '(Números)' : ''}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Target Letters Card */}

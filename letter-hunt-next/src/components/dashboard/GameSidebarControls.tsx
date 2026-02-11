@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/Input';
 import { cn } from '@/lib/utils';
 import { Check, RotateCcw, ArrowLeft, Play, Trophy } from 'lucide-react';
 import type { GameMode } from '@/types/game';
+import { SYMBOLS } from '@/types/game';
 
 interface GameSidebarControlsProps {
   /** Current game state */
@@ -78,8 +79,9 @@ export function GameSidebarControls({
   const isLost = gameState === 'lost';
   const checkingState = gameState === 'checking' || isChecking;
   
-  // Check if these are numbers (level 5)
+  // Check if these are numbers (level 5) or symbols (level 6)
   const isNumbers = targetLetters && targetLetters.length > 0 && /^[0-9]$/.test(targetLetters[0]);
+  const isSymbols = targetLetters && targetLetters.length > 0 && SYMBOLS.includes(targetLetters[0]);
 
   return (
     <div
@@ -102,11 +104,11 @@ export function GameSidebarControls({
                 type="number"
                 min="0"
                 max="225"
-                placeholder={isNumbers ? "¿Cuántos números ves?" : "¿Cuántas letras ves?"}
+                placeholder={isSymbols ? "¿Cuántos símbolos ves?" : isNumbers ? "¿Cuántos números ves?" : "¿Cuántas letras ves?"}
                 value={userCount || ''}
                 onChange={(e) => onCountChange?.(e.target.value)}
                 className="w-full"
-                aria-label={isNumbers ? "Ingresa el conteo de números objetivo" : "Ingresa el conteo de letras objetivo"}
+                aria-label={isSymbols ? "Ingresa el conteo de símbolos objetivo" : isNumbers ? "Ingresa el conteo de números objetivo" : "Ingresa el conteo de letras objetivo"}
               />
             </div>
           )}
