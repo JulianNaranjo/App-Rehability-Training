@@ -50,6 +50,11 @@ export function GameSettings({ className, onSettingsComplete }: GameSettingsProp
             <div>• Nivel 3: 3 letras objetivo</div>
             <div>• Nivel 4: 4 letras objetivo</div>
             <div>• Nivel 5: 4 números objetivo (0-9)</div>
+            <div>• Nivel 6: 4 símbolos objetivo</div>
+            <div>• Nivel 7: Todos los números pares</div>
+            <div>• Nivel 8: Todos los números impares</div>
+            <div>• Nivel 9: Filas pares=pares, Filas impares=impares</div>
+            <div>• Nivel 10: Filas pares=impares, Filas impares=pares</div>
           </div>
         </div>
         

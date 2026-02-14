@@ -11,6 +11,7 @@
 
 import { cn } from '@/lib/utils';
 import { SYMBOLS, EVEN_NUMBERS, ODD_NUMBERS } from '@/types/game';
+import { useGameStore } from '@/store/game-store';
 
 interface TargetLettersDisplayProps {
   /** Array of target letters to display */
@@ -49,6 +50,9 @@ function isOddLevel(letters: string[]): boolean {
  * "Busca todas las letras: A, B, C" or "Busca todos los números: 1, 2, 3" or "Busca todos los símbolos: ∞, π, ÷"
  */
 export function TargetLettersDisplay({ letters, gameMode, className }: TargetLettersDisplayProps) {
+  // Get current level from store - must be called before any early return
+  const { currentLevel } = useGameStore();
+
   if (!letters || letters.length === 0) return null;
 
   // Check if these are numbers (level 5)
@@ -58,7 +62,11 @@ export function TargetLettersDisplay({ letters, gameMode, className }: TargetLet
   // Check if level 7 (even numbers) or level 8 (odd numbers)
   const isEven = isEvenLevel(letters);
   const isOdd = isOddLevel(letters);
-  
+  // Level 9: Even rows = even numbers, Odd rows = odd numbers
+  const isLevel9 = currentLevel === 9;
+  // Level 10: Even rows = odd numbers, Odd rows = even numbers
+  const isLevel10 = currentLevel === 10;
+
   // Don't apply toUpperCase() to symbols - they should be displayed as-is
   const lettersText = letters.map(l => isSymbol(l) ? l : l.toUpperCase()).join(', ');
 
@@ -80,19 +88,27 @@ export function TargetLettersDisplay({ letters, gameMode, className }: TargetLet
       <div className="text-center">
         {/* Label */}
         <p className="text-sm md:text-base opacity-90 mb-3">
-          {isEven 
-            ? 'Busca todos los números pares:' 
-            : isOdd 
-              ? 'Busca todos los números impares:' 
-              : isSymbols 
-                ? 'Busca todos los símbolos:' 
-                : isNumbers 
-                  ? 'Busca todos los números:' 
-                  : 'Busca todas las letras:'}
+          {isLevel9 && gameMode === 'count'
+            ? 'Cuenta cuántos números pares hay en las filas pares. Comienza en la fila 0'
+            : isLevel9
+              ? 'En las filas pares señala los números pares y en las filas impares señale los números impares. Comienza en la fila 0'
+              : isLevel10 && gameMode === 'count'
+                ? 'Cuenta cuántos números impares hay en las filas impares. Comienza en la fila 1'
+                : isLevel10
+                  ? 'En las filas pares señale los números impares y en las filas impares señale los números pares. Comienza en la fila 0'
+                  : isEven
+                    ? 'Busca todos los números pares:'
+                    : isOdd
+                      ? 'Busca todos los números impares:'
+                      : isSymbols
+                        ? 'Busca todos los símbolos:'
+                        : isNumbers
+                          ? 'Busca todos los números:'
+                          : 'Busca todas las letras:'}
         </p>
-        
-        {/* Letters/Numbers/Symbols - No hints for levels 7 and 8 */}
-        {!isEven && !isOdd && (
+
+        {/* Letters/Numbers/Symbols - No hints for levels 7, 8, 9 and 10 */}
+        {!isEven && !isOdd && !isLevel9 && !isLevel10 && (
           <p className={cn(
             "font-bold tracking-wider",
             isSymbols ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl"

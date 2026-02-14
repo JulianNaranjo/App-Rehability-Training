@@ -169,12 +169,14 @@ export function GameBoardContainer({
               }}
               className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((level) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
                 <option key={level} value={level}>
                   Nivel {level} {
-                    level === 8 ? '(Impares)' : 
-                    level === 7 ? '(Pares)' : 
-                    level === 6 ? '(Símbolos)' : 
+                    level === 10 ? '(P/I Alternados)' :
+                    level === 9 ? '(P/I por Fila)' :
+                    level === 8 ? '(Impares)' :
+                    level === 7 ? '(Pares)' :
+                    level === 6 ? '(Símbolos)' :
                     level === 5 ? '(Números)' : ''
                   }
                 </option>
