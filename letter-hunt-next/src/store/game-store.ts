@@ -181,10 +181,11 @@ export const useGameStore = create<GameStore>()(
       const targetCount = targetLetterCount ?? getTargetLetterCount(); console.log("🎯 TARGET COUNT DEBUG:", { targetLetterCount, calculated: getTargetLetterCount(), final: targetCount });
       const selectedGameMode = gameMode ?? get().gameMode ?? 'selection';
       const { board, targetLetters, solutionIndices } = generateGameBoard(
-        DEFAULT_GAME_CONFIG, 
+        DEFAULT_GAME_CONFIG,
         targetTypes,
         targetCount,
-        currentLevel
+        currentLevel,
+        selectedGameMode
       );
       
       const startTime = Date.now();
@@ -388,8 +389,8 @@ export const useGameStore = create<GameStore>()(
     nextLevel: () => {
       const currentLevel = get().currentLevel;
       const gameMode = get().gameMode;
-      // Cap at level 8 (includes even/odd numbers levels)
-      const newLevel = Math.min(currentLevel + 1, 8);
+      // Cap at level 10 (includes row-based even/odd number levels)
+      const newLevel = Math.min(currentLevel + 1, 10);
       set({ currentLevel: newLevel });
       get().generateNewGame(newLevel, undefined, gameMode); // Will auto-calculate
     },
