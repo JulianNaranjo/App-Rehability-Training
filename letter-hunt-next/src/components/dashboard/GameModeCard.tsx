@@ -13,12 +13,13 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import type { GameModeConfig } from '@/skills/dashboard/dashboard-logic';
-import { 
-  MousePointerClick, 
-  Calculator, 
-  Eye, 
+import {
+  MousePointerClick,
+  Calculator,
+  Eye,
   Layers,
-  type LucideIcon 
+  Brain,
+  type LucideIcon
 } from 'lucide-react';
 
 // Map icon names to Lucide components
@@ -27,6 +28,7 @@ const iconMap: Record<string, LucideIcon> = {
   Calculator,
   Eye,
   Layers,
+  Brain,
 };
 
 interface GameModeCardProps {

@@ -14,7 +14,7 @@ import type { GameMode } from '@/types/game';
  */
 export interface GameModeConfig {
   /** Unique identifier for the mode */
-  id: GameMode | 'visual-memory' | 'matching-pairs';
+  id: GameMode | 'visual-memory' | 'matching-pairs' | 'working-memory';
   /** Display title */
   title: string;
   /** Lucide icon name */
@@ -104,11 +104,20 @@ export const dashboardConfig: DashboardConfig = {
       description: 'Entrena tu memoria con ejercicios progresivos.',
       gameModes: [
         {
+          id: 'working-memory',
+          title: 'Memoria de Trabajo',
+          icon: 'Brain',
+          gradientFrom: 'from-warning-400',
+          gradientTo: 'to-warning-600',
+          shortDescription: 'Asociación número-letra',
+          instructions: 'Memoriza la tabla de referencia y completa las casillas con la letra correspondiente a cada número. ¡Entrena tu memoria de trabajo!',
+        },
+        {
           id: 'visual-memory',
           title: 'Memoria Visual',
           icon: 'Eye',
-          gradientFrom: 'from-warning-400',
-          gradientTo: 'to-warning-600',
+          gradientFrom: 'from-warning-500',
+          gradientTo: 'to-warning-700',
           shortDescription: 'Recordar patrones',
           instructions: 'Observa el patrón de letras durante unos segundos y luego reproduce la secuencia exacta. ¡Desafía tu memoria visual!',
         },
@@ -116,8 +125,8 @@ export const dashboardConfig: DashboardConfig = {
           id: 'matching-pairs',
           title: 'Pares/Matching',
           icon: 'Layers',
-          gradientFrom: 'from-warning-500',
-          gradientTo: 'to-warning-700',
+          gradientFrom: 'from-warning-600',
+          gradientTo: 'to-warning-800',
           shortDescription: 'Juego de cartas',
           instructions: 'Encuentra las parejas de letras iguales volteando cartas. Memoria las posiciones para completarlo en menos intentos.',
         },
@@ -160,6 +169,6 @@ export function isAttentionGameMode(mode: string): mode is GameMode {
 /**
  * Type guard for memory game modes
  */
-export function isMemoryGameMode(mode: string): mode is 'visual-memory' | 'matching-pairs' {
-  return mode === 'visual-memory' || mode === 'matching-pairs';
+export function isMemoryGameMode(mode: string): mode is 'visual-memory' | 'matching-pairs' | 'working-memory' {
+  return mode === 'visual-memory' || mode === 'matching-pairs' || mode === 'working-memory';
 }
