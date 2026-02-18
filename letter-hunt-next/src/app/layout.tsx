@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Letter Hunt - Programa de Rehabilitación",
-  description: "Juego de rehabilitación cognitiva para mejorar atención y memoria",
+  description:
+    "Juego de rehabilitación cognitiva para mejorar atención y memoria",
 };
 
 export default function RootLayout({
@@ -30,9 +31,7 @@ export default function RootLayout({
       >
         <Navbar />
         <div className="container mx-auto px-4 py-8">
-          <main className="max-w-6xl mx-auto pt-16">
-            {children}
-          </main>
+          <main className="max-w-7xl mx-auto pt-16">{children}</main>
         </div>
       </body>
     </html>

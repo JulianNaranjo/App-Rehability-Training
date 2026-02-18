@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * Game Board Container Component
@@ -9,18 +9,18 @@
  * @module GameBoardContainer
  */
 
-import { useRouter } from 'next/navigation';
-import { GameBoard } from '@/components/GameBoard';
-import { TargetLettersDisplay } from './TargetLettersDisplay';
-import { GameProgress } from './GameProgress';
-import { GameTimerScore } from './GameTimerScore';
-import { GameSidebarControls } from './GameSidebarControls';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { useGameStore } from '@/store/game-store';
-import { cn } from '@/lib/utils';
-import { useState, useCallback, useEffect } from 'react';
-import { Trophy } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { GameBoard } from "@/components/GameBoard";
+import { TargetLettersDisplay } from "./TargetLettersDisplay";
+import { GameProgress } from "./GameProgress";
+import { GameTimerScore } from "./GameTimerScore";
+import { GameSidebarControls } from "./GameSidebarControls";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { useGameStore } from "@/store/game-store";
+import { cn } from "@/lib/utils";
+import { useState, useCallback, useEffect } from "react";
+import { Trophy } from "lucide-react";
 
 interface GameBoardContainerProps {
   /** Additional CSS classes */
@@ -35,9 +35,7 @@ interface GameBoardContainerProps {
  * - Middle: Game board (left) + Sidebar controls (right)
  * - On mobile: Board above, controls below
  */
-export function GameBoardContainer({
-  className,
-}: GameBoardContainerProps) {
+export function GameBoardContainer({ className }: GameBoardContainerProps) {
   const router = useRouter();
   const {
     targetLetters,
@@ -60,11 +58,11 @@ export function GameBoardContainer({
 
   const [isChecking, setIsChecking] = useState(false);
   const [showNameInput, setShowNameInput] = useState(false);
-  const [playerName, setPlayerName] = useState('');
+  const [playerName, setPlayerName] = useState("");
 
-  const isPlaying = gameState === 'playing';
-  const isWon = gameState === 'won';
-  const isLost = gameState === 'lost';
+  const isPlaying = gameState === "playing";
+  const isWon = gameState === "won";
+  const isLost = gameState === "lost";
 
   // Timer effect - update elapsed time every 100ms while playing
   useEffect(() => {
@@ -79,9 +77,10 @@ export function GameBoardContainer({
 
   const targetCount = solutionIndices.size;
   const selectedCount = selectedIndices.size;
-  const canVerify = gameMode === 'selection' 
-    ? selectedCount > 0 
-    : userCount !== undefined && userCount > 0;
+  const canVerify =
+    gameMode === "selection"
+      ? selectedCount > 0
+      : userCount !== undefined && userCount > 0;
 
   // Handle verify answer
   const handleVerify = useCallback(() => {
@@ -93,29 +92,32 @@ export function GameBoardContainer({
   }, [canVerify, isChecking, checkAnswer]);
 
   // Handle count input change
-  const handleCountChange = useCallback((value: string) => {
-    const count = parseInt(value, 10);
-    setUserCount(isNaN(count) ? 0 : count);
-  }, [setUserCount]);
+  const handleCountChange = useCallback(
+    (value: string) => {
+      const count = parseInt(value, 10);
+      setUserCount(isNaN(count) ? 0 : count);
+    },
+    [setUserCount],
+  );
 
   // Handle new game
   const handleNewGame = useCallback(() => {
     setShowNameInput(false);
-    setPlayerName('');
+    setPlayerName("");
     generateNewGame();
   }, [generateNewGame]);
 
   // Handle next level
   const handleNextLevel = useCallback(() => {
     setShowNameInput(false);
-    setPlayerName('');
+    setPlayerName("");
     nextLevel();
   }, [nextLevel]);
 
   // Handle reset - restart current level with new board
   const handleReset = useCallback(() => {
     setShowNameInput(false);
-    setPlayerName('');
+    setPlayerName("");
     // Generate new game keeping current level and mode
     generateNewGame(currentLevel, undefined, gameMode);
   }, [generateNewGame, currentLevel, gameMode]);
@@ -123,7 +125,7 @@ export function GameBoardContainer({
   // Handle return to dashboard - uses Next.js router
   const handleReturnToDashboard = useCallback(() => {
     resetGame();
-    router.push('/dashboard');
+    router.push("/dashboard");
   }, [resetGame, router]);
 
   // Handle submit score
@@ -131,88 +133,100 @@ export function GameBoardContainer({
     if (playerName.trim()) {
       addToLeaderboard(playerName.trim());
       setShowNameInput(false);
-      setPlayerName('');
+      setPlayerName("");
       handleNewGame();
     }
   }, [playerName, addToLeaderboard, handleNewGame]);
 
   return (
-    <div className={cn('space-y-6', className)}>
-      {/* Dashboard-style Header Section */}
-      <section
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8"
-        aria-label="Información del juego"
-      >
-        {/* Section Title */}
-        <div className="mb-6 text-center">
-          <h2 className={cn(
+    <div className={cn("space-y-6", className)}>
+      <section className="text-center">
+        <h2
+          className={cn(
             "text-2xl md:text-3xl font-bold mb-2",
-            gameMode === 'count'
+            gameMode === "count"
               ? "text-secondary-600 dark:text-secondary-400"
-              : "text-primary-600 dark:text-primary-400"
-          )}>
-            Mejora atención - Modo {gameMode === 'count' ? 'Conteo' : 'Selección'}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Nivel {currentLevel}
-          </p>
-          
-          {/* TEMPORAL: Selector de nivel para testing */}
-          <div className="mt-4 inline-block">
-            <label className="block text-sm text-gray-500 mb-1">Seleccionar nivel (temporal):</label>
-            <select
-              value={currentLevel}
-              onChange={(e) => {
-                const newLevel = parseInt(e.target.value, 10);
-                setLevel(newLevel);
-                generateNewGame(newLevel, undefined, gameMode);
-              }}
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
-                <option key={level} value={level}>
-                  Nivel {level} {
-                    level === 10 ? '(P/I Alternados)' :
-                    level === 9 ? '(P/I por Fila)' :
-                    level === 8 ? '(Impares)' :
-                    level === 7 ? '(Pares)' :
-                    level === 6 ? '(Símbolos)' :
-                    level === 5 ? '(Números)' : ''
-                  }
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Target Letters Card */}
-        <div className="mb-6">
-          <TargetLettersDisplay letters={targetLetters} gameMode={gameMode} />
-        </div>
-
-        {/* Progress - Only show in selection mode */}
-        {gameMode === 'selection' && (
-          <div className="mb-4">
-            <GameProgress
-              selectedCount={selectedCount}
-              targetCount={targetCount}
-            />
-          </div>
-        )}
-
+              : "text-primary-600 dark:text-primary-400",
+          )}
+        >
+          Mejora atención - Modo {gameMode === "count" ? "Conteo" : "Selección"}
+        </h2>
         {/* Timer and Score */}
         <GameTimerScore elapsedTime={elapsedTime} score={score} />
       </section>
-
       {/* Game Area - Board + Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Game Board - Takes 2/3 on desktop */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 lg:order-1">
           <GameBoard />
         </div>
 
         {/* Sidebar Controls - Takes 1/3 on desktop, full width on mobile */}
-        <div className="space-y-4">
+        <div className="space-y-4 order-first lg:order-2">
+          <section
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 md:p-8"
+            aria-label="Información del juego"
+          >
+            {/* Section Title */}
+            <div className="mb-6 text-center">
+              <p className="text-gray-600 dark:text-gray-400 text-lg">
+                Nivel {currentLevel}
+              </p>
+
+              {/* TEMPORAL: Selector de nivel para testing */}
+              <div className="mt-4 inline-block">
+                <label className="block text-sm text-gray-500 mb-1">
+                  Seleccionar nivel (temporal):
+                </label>
+                <select
+                  value={currentLevel}
+                  onChange={(e) => {
+                    const newLevel = parseInt(e.target.value, 10);
+                    setLevel(newLevel);
+                    generateNewGame(newLevel, undefined, gameMode);
+                  }}
+                  className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((level) => (
+                    <option key={level} value={level}>
+                      Nivel {level}{" "}
+                      {level === 10
+                        ? "(P/I Alternados)"
+                        : level === 9
+                          ? "(P/I por Fila)"
+                          : level === 8
+                            ? "(Impares)"
+                            : level === 7
+                              ? "(Pares)"
+                              : level === 6
+                                ? "(Símbolos)"
+                                : level === 5
+                                  ? "(Números)"
+                                  : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Target Letters Card */}
+            <div className="mb-6">
+              <TargetLettersDisplay
+                letters={targetLetters}
+                gameMode={gameMode}
+              />
+            </div>
+
+            {/* Progress - Only show in selection mode */}
+            {gameMode === "selection" && (
+              <div className="mb-4">
+                <GameProgress
+                  selectedCount={selectedCount}
+                  targetCount={targetCount}
+                />
+              </div>
+            )}
+          </section>
           {/* Game Controls */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
@@ -266,7 +280,7 @@ export function GameBoardContainer({
                 <Button
                   onClick={() => {
                     setShowNameInput(false);
-                    setPlayerName('');
+                    setPlayerName("");
                   }}
                   variant="ghost"
                   className="w-full"
