@@ -3,17 +3,24 @@
 /**
  * Working Memory Game Component
  * 
- * Main component for the working memory game (Level 1).
- * Includes timer, reference table, grid, and validation.
+ * Main component for the working memory game.
+ * Supports Level 1-6 (numbers-letters, recall, syllables, symbols).
  * 
  * @module WorkingMemoryGame
  */
 
 import { useEffect, useState } from 'react';
 import { useWorkingMemoryStore } from '@/store/working-memory-store';
+import { EMPTY_PENALTY_PERCENTAGE } from '@/types/working-memory';
 import { ReferenceTable } from './ReferenceTable';
 import { ReferenceInputTable } from './ReferenceInputTable';
 import { NumberLetterGrid } from './NumberLetterGrid';
+import { SyllableReferenceTable } from './SyllableReferenceTable';
+import { SyllableInputTable } from './SyllableInputTable';
+import { SymbolReferenceTable } from './SymbolReferenceTable';
+import { SymbolInputTable } from './SymbolInputTable';
+import { SeriesGame } from './SeriesGame';
+import { LevelSelector } from './LevelSelector';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { cn } from '@/lib/utils';
@@ -27,7 +34,10 @@ import {
   Trophy,
   Clock,
   Target,
-  ArrowRight
+  ArrowRight,
+  Sparkles,
+  Hash,
+  Layers
 } from 'lucide-react';
 
 interface WorkingMemoryGameProps {
@@ -37,6 +47,7 @@ interface WorkingMemoryGameProps {
 export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
   const {
     currentLevel,
+    gameType,
     mapping,
     grid,
     userReferenceInputs,
@@ -45,6 +56,8 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
     isCompleted,
     isValidated,
     validationResult,
+    level3Phase,
+    level4Phase,
     generateNewGame,
     updateCell,
     validateAnswers,
@@ -53,18 +66,27 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
     updateReferenceCell,
     validateReferenceTable,
     continueToLevel2,
+    continueToLevel3,
+    continueToLevel4,
+    continueToLevel5,
+    continueToLevel6,
+    continueToLevel7,
+    updateLevel3Phase,
+    updateLevel4Phase,
   } = useWorkingMemoryStore();
   
   const [elapsedTime, setElapsedTime] = useState(0);
   const [showInstructions, setShowInstructions] = useState(true);
   const [isReferenceVisible, setIsReferenceVisible] = useState(true);
   
-  // Initialize game on mount
+  const startTime = useWorkingMemoryStore(state => state.startTime);
+
+  // Initialize game on mount (only once, when no game is active)
   useEffect(() => {
-    if (grid.length === 0) {
+    if (startTime === null) {
       generateNewGame();
     }
-  }, [grid.length, generateNewGame]);
+  }, [startTime, generateNewGame]);
   
   // Timer
   useEffect(() => {
@@ -96,6 +118,48 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
     setIsReferenceVisible(true);
   };
 
+  const handleContinueToLevel3 = () => {
+    continueToLevel3();
+    setElapsedTime(0);
+    setShowInstructions(true);
+    setIsReferenceVisible(true);
+  };
+
+  const handleContinueToLevel4 = () => {
+    continueToLevel4();
+    setElapsedTime(0);
+    setShowInstructions(true);
+    setIsReferenceVisible(true);
+  };
+
+  const handleContinueToLevel5 = () => {
+    continueToLevel5();
+    setElapsedTime(0);
+    setShowInstructions(true);
+    setIsReferenceVisible(true);
+  };
+
+  const handleContinueToLevel6 = () => {
+    continueToLevel6();
+    setElapsedTime(0);
+    setShowInstructions(true);
+    setIsReferenceVisible(true);
+  };
+
+  const handleContinueToLevel7 = () => {
+    continueToLevel7();
+    setElapsedTime(0);
+    setShowInstructions(true);
+    setIsReferenceVisible(true);
+  };
+
+  const handleLevelSelect = (level: 1 | 2 | 3 | 4 | 5 | 6 | 7) => {
+    generateNewGame(level);
+    setElapsedTime(0);
+    setShowInstructions(true);
+    setIsReferenceVisible(true);
+  };
+
   const toggleReference = () => {
     setIsReferenceVisible(!isReferenceVisible);
   };
@@ -105,9 +169,27 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
   };
 
   const handleContinueToGrid = () => {
-    // The grid is already generated in continueToLevel2
-    // Just need to update UI state
     setElapsedTime(0);
+  };
+
+  const handleContinueToLevel3Phase2 = () => {
+    updateLevel3Phase(2);
+    setElapsedTime(0);
+    setShowInstructions(true);
+  };
+
+  const handleValidateLevel3Phase2 = () => {
+    validateReferenceTable();
+  };
+
+  const handleContinueToLevel4Phase2 = () => {
+    updateLevel4Phase(2);
+    setElapsedTime(0);
+    setShowInstructions(true);
+  };
+
+  const handleValidateLevel4Phase2 = () => {
+    validateReferenceTable();
   };
   
   const formatTime = (seconds: number) => {
@@ -119,6 +201,18 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
   // Check if we should show Level 2 reference input
   const showReferenceInput = currentLevel === 2 && !referenceTableValidated;
 
+  // Check if we should show Level 3 Phase 2 reference input
+  const showLevel3Phase2Input = currentLevel === 3 && level3Phase === 2 && !referenceTableValidated;
+
+  // Check if we should show Level 4 reference input (Level 4 starts with recall)
+  const showLevel4Input = currentLevel === 4 && level4Phase === 1 && !referenceTableValidated;
+
+  // Check if we should show Level 4 Phase 2 reference input
+  const showLevel4Phase2Input = currentLevel === 4 && level4Phase === 2 && !referenceTableValidated;
+
+  // Check if we should show Level 6 reference input (Level 6 starts with recall)
+  const showLevel6Input = currentLevel === 6 && !referenceTableValidated;
+
   // Check if Level 1 was completed with >= 80%
   const canContinueToLevel2 =
     currentLevel === 1 &&
@@ -126,22 +220,118 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
     validationResult &&
     validationResult.percentage >= 80;
 
+  // Check if Level 2 was completed with >= 80%
+  const canContinueToLevel3 =
+    currentLevel === 2 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  // Check if Level 3 Phase 1 was completed with >= 80%
+  const canContinueToLevel3Phase2 =
+    currentLevel === 3 &&
+    level3Phase === 1 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  // Check if Level 3 was completed with >= 80%
+  const canContinueToLevel4 =
+    currentLevel === 3 &&
+    level3Phase === 1 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  // Check if Level 4 Phase 1 was completed with >= 80%
+  const canContinueToLevel4Phase2 =
+    currentLevel === 4 &&
+    level4Phase === 1 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  // Check if Level 4 was completed with >= 80%
+  const canContinueToLevel5 =
+    currentLevel === 4 &&
+    level4Phase === 1 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  // Check if Level 5 was completed with >= 80%
+  const canContinueToLevel6 =
+    currentLevel === 5 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  // Check if Level 6 was completed with >= 80%
+  const canContinueToLevel7 =
+    currentLevel === 6 &&
+    isValidated &&
+    validationResult &&
+    validationResult.percentage >= 80;
+
+  const isLevel3 = currentLevel === 3;
+  const isLevel4 = currentLevel === 4;
+  const isLevel5 = currentLevel === 5;
+  const isLevel6 = currentLevel === 6;
+  const isLevel7 = currentLevel === 7;
+  const isSymbolLevel = isLevel5 || isLevel6;
+  
+  const showSyllableReference = isLevel3 && level3Phase === 1;
+  const showSymbolReference = isLevel5;
+
+  // Level 7 uses SeriesGame component (completely different UI)
+  if (isLevel7) {
+    return (
+      <div className={cn('space-y-6', className)}>
+        <LevelSelector
+          currentLevel={currentLevel}
+          onSelectLevel={handleLevelSelect}
+        />
+        <SeriesGame />
+      </div>
+    );
+  }
+
   return (
     <div className={cn('space-y-6', className)}>
+      {/* Level Selector */}
+      <LevelSelector
+        currentLevel={currentLevel}
+        onSelectLevel={handleLevelSelect}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary-100 rounded-lg">
-            <Brain className="w-6 h-6 text-primary-600" />
+            {isSymbolLevel ? (
+              <Hash className="w-6 h-6 text-warning-600" />
+            ) : isLevel3 || isLevel4 ? (
+              <Sparkles className="w-6 h-6 text-primary-600" />
+            ) : (
+              <Brain className="w-6 h-6 text-primary-600" />
+            )}
           </div>
           <div>
             <h1 className="text-xl font-semibold text-text-primary">
               Memoria de Trabajo - Nivel {currentLevel}
+              {isLevel3 && level3Phase === 2 && ' (Fase 2)'}
+              {isLevel4 && level4Phase === 2 && ' (Fase 2)'}
             </h1>
             <p className="text-sm text-text-secondary">
-              {currentLevel === 1
-                ? 'Coloque debajo de cada número la letra que corresponde'
-                : 'Recuerda las letras de la tabla de referencia'}
+              {isSymbolLevel
+                ? 'Coloque debajo de cada número el símbolo que corresponde'
+                : isLevel3 || isLevel4
+                  ? level3Phase === 1 || level4Phase === 1
+                    ? 'Coloque debajo de cada número la sílaba que corresponde'
+                    : 'Recuerda las sílabas de la tabla de referencia'
+                  : currentLevel === 1
+                    ? 'Coloque debajo de cada número la letra que corresponde'
+                    : 'Recuerda las letras de la tabla de referencia'}
             </p>
           </div>
         </div>
@@ -166,13 +356,37 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
                   Instrucciones
                 </h3>
                 <p className="text-sm text-primary-700">
-                  1. Memoriza la tabla de referencia que muestra qué letra corresponde a cada número.
-                  <br />
-                  2. <strong>Oculta la tabla</strong> usando el botón &quot;Ocultar&quot; cuando estés listo.
-                  <br />
-                  3. Completa las casillas vacías con la letra correspondiente al número que está debajo.
-                  <br />
-                  4. Puedes mostrar la tabla nuevamente si necesitas recordar, o validar cuando quieras.
+                  {isSymbolLevel ? (
+                    <>
+                      1. Memoriza la tabla de referencia que muestra qué símbolo corresponde a cada número.
+                      <br />
+                      2. <strong>Oculta la tabla</strong> usando el botón &quot;Ocultar&quot; cuando estés listo.
+                      <br />
+                      3. Completa las casillas vacías con el <strong>símbolo</strong> correspondiente al número que está debajo.
+                      <br />
+                      4. Puedes mostrar la tabla nuevamente si necesitas recordar, o validar cuando quieras.
+                    </>
+                  ) : isLevel3 || isLevel4 ? (
+                    <>
+                      1. Memoriza la tabla de referencia que muestra qué sílaba corresponde a cada número.
+                      <br />
+                      2. <strong>Oculta la tabla</strong> usando el botón &quot;Ocultar&quot; cuando estés listo.
+                      <br />
+                      3. Completa las casillas vacías con la <strong>sílaba</strong> (2 letras) correspondiente al número que está debajo.
+                      <br />
+                      4. Puedes mostrar la tabla nuevamente si necesitas recordar, o validar cuando quieras.
+                    </>
+                  ) : (
+                    <>
+                      1. Memoriza la tabla de referencia que muestra qué letra corresponde a cada número.
+                      <br />
+                      2. <strong>Oculta la tabla</strong> usando el botón &quot;Ocultar&quot; cuando estés listo.
+                      <br />
+                      3. Completa las casillas vacías con la letra correspondiente al número que está debajo.
+                      <br />
+                      4. Puedes mostrar la tabla nuevamente si necesitas recordar, o validar cuando quieras.
+                    </>
+                  )}
                 </p>
               </div>
               <button
@@ -199,8 +413,60 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
         />
       )}
 
-      {/* Level 1 or Level 2 (after reference validated): Reference Table */}
-      {!showReferenceInput && currentLevel === 1 && (
+      {/* Level 3 Phase 2: Syllable Input Table */}
+      {showLevel3Phase2Input && (
+        <SyllableInputTable
+          numbers={['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']}
+          userInputs={userReferenceInputs}
+          isValidated={referenceTableValidated}
+          validationResult={referenceValidationResult}
+          onInputChange={updateReferenceCell}
+          onValidate={handleValidateLevel3Phase2}
+          onContinue={handleContinueToGrid}
+        />
+      )}
+
+      {/* Level 4 Phase 1: Syllable Input Table (recall first) */}
+      {showLevel4Input && (
+        <SyllableInputTable
+          numbers={['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']}
+          userInputs={userReferenceInputs}
+          isValidated={referenceTableValidated}
+          validationResult={referenceValidationResult}
+          onInputChange={updateReferenceCell}
+          onValidate={handleValidateReference}
+          onContinue={handleContinueToGrid}
+        />
+      )}
+
+      {/* Level 4 Phase 2: Syllable Input Table */}
+      {showLevel4Phase2Input && (
+        <SyllableInputTable
+          numbers={['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']}
+          userInputs={userReferenceInputs}
+          isValidated={referenceTableValidated}
+          validationResult={referenceValidationResult}
+          onInputChange={updateReferenceCell}
+          onValidate={handleValidateLevel4Phase2}
+          onContinue={handleContinueToGrid}
+        />
+      )}
+
+      {/* Level 6: Symbol Input Table (recall first) */}
+      {showLevel6Input && (
+        <SymbolInputTable
+          numbers={['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']}
+          userInputs={userReferenceInputs}
+          isValidated={referenceTableValidated}
+          validationResult={referenceValidationResult}
+          onInputChange={updateReferenceCell}
+          onValidate={handleValidateReference}
+          onContinue={handleContinueToGrid}
+        />
+      )}
+
+      {/* Level 1: Reference Table */}
+      {!showReferenceInput && !showLevel3Phase2Input && !showLevel4Input && !showLevel4Phase2Input && !showLevel6Input && !isLevel3 && !isLevel4 && !isSymbolLevel && currentLevel === 1 && (
         <ReferenceTable
           mapping={mapping}
           isVisible={isReferenceVisible}
@@ -208,8 +474,26 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
         />
       )}
 
+      {/* Level 3 Phase 1: Syllable Reference Table */}
+      {showSyllableReference && (
+        <SyllableReferenceTable
+          mapping={mapping}
+          isVisible={isReferenceVisible}
+          onToggle={toggleReference}
+        />
+      )}
+
+      {/* Level 5: Symbol Reference Table */}
+      {showSymbolReference && (
+        <SymbolReferenceTable
+          mapping={mapping}
+          isVisible={isReferenceVisible}
+          onToggle={toggleReference}
+        />
+      )}
+
       {/* Game Grid (only show if not in reference input phase) */}
-      {!showReferenceInput && grid.length > 0 && (
+      {!showReferenceInput && !showLevel3Phase2Input && !showLevel4Input && !showLevel4Phase2Input && !showLevel6Input && grid.length > 0 && (
         <Card className="p-4">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-medium text-text-primary">
@@ -221,6 +505,7 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
           </div>
 
           <NumberLetterGrid
+            maxLength={gameType === 'syllables' ? 2 : 1}
             grid={grid}
             onCellChange={updateCell}
             isValidated={isValidated}
@@ -324,14 +609,14 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
               <div className="bg-warning-100 border border-warning-300 rounded-lg p-3 mb-6 text-center">
                 <p className="text-sm text-warning-800">
                   <AlertCircle className="w-4 h-4 inline mr-1" />
-                  Se aplicó una penalización de {validationResult.penaltyApplied}%
+                  Se aplicó una penalización de {EMPTY_PENALTY_PERCENTAGE}%
                   por celdas vacías ({validationResult.emptyCells} celdas)
                 </p>
               </div>
             )}
             
             {/* Action Buttons */}
-            <div className="flex justify-center gap-4">
+            <div className="flex justify-center gap-4 flex-wrap">
               <Button
                 onClick={handleNewGame}
                 size="lg"
@@ -350,6 +635,83 @@ export function WorkingMemoryGame({ className }: WorkingMemoryGameProps) {
                 >
                   <ArrowRight className="w-5 h-5 mr-2" />
                   Continuar al Nivel 2
+                </Button>
+              )}
+
+              {canContinueToLevel3 && (
+                <Button
+                  onClick={handleContinueToLevel3}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Continuar al Nivel 3
+                </Button>
+              )}
+
+              {canContinueToLevel3Phase2 && (
+                <Button
+                  onClick={handleContinueToLevel3Phase2}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <ArrowRight className="w-5 h-5 mr-2" />
+                  Continuar a Fase 2
+                </Button>
+              )}
+
+              {canContinueToLevel4 && (
+                <Button
+                  onClick={handleContinueToLevel4}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Continuar al Nivel 4
+                </Button>
+              )}
+
+              {canContinueToLevel4Phase2 && (
+                <Button
+                  onClick={handleContinueToLevel4Phase2}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <ArrowRight className="w-5 h-5 mr-2" />
+                  Continuar a Fase 2
+                </Button>
+              )}
+
+              {canContinueToLevel5 && (
+                <Button
+                  onClick={handleContinueToLevel5}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <Hash className="w-5 h-5 mr-2" />
+                  Continuar al Nivel 5
+                </Button>
+              )}
+
+              {canContinueToLevel6 && (
+                <Button
+                  onClick={handleContinueToLevel6}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <Trophy className="w-5 h-5 mr-2" />
+                  Continuar al Nivel 6
+                </Button>
+              )}
+
+              {canContinueToLevel7 && (
+                <Button
+                  onClick={handleContinueToLevel7}
+                  size="lg"
+                  className="min-w-[200px]"
+                >
+                  <Layers className="w-5 h-5 mr-2" />
+                  Continuar al Nivel 7
                 </Button>
               )}
             </div>
