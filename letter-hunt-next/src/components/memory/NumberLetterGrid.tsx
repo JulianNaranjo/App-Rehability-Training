@@ -17,6 +17,7 @@ interface NumberLetterGridProps {
   grid: GridCell[][];
   onCellChange: (row: number, col: number, value: string) => void;
   isValidated: boolean;
+  maxLength?: number;
   className?: string;
 }
 
@@ -24,6 +25,7 @@ export function NumberLetterGrid({
   grid,
   onCellChange,
   isValidated,
+  maxLength = 1,
   className,
 }: NumberLetterGridProps) {
   const inputRefs = useRef<(HTMLInputElement | null)[][]>([]);
@@ -187,7 +189,7 @@ export function NumberLetterGrid({
                     inputRefs.current[rowIndex][colIndex] = el;
                   }}
                   type="text"
-                  maxLength={1}
+                  maxLength={maxLength}
                   value={cell.value}
                   onChange={(e) =>
                     onCellChange(rowIndex, colIndex, e.target.value)
