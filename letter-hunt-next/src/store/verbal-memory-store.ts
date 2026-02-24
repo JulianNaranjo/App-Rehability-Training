@@ -12,14 +12,16 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import {
-  VerbalMemoryState,
-  VerbalMemoryResult,
-  VerbalMemoryStats,
   VerbalMemoryWord,
   VerbalMemoryLevel,
+  VerbalMemoryResult,
+  VerbalMemoryState,
+  VerbalMemoryStats,
   SentenceInput,
   SentenceValidation,
   WORD_BANK,
+  WORD_GROUPS,
+  WordGroup,
   WORDS_PER_GAME,
   SENTENCES_PER_GAME,
   WORDS_PER_SENTENCE,
@@ -70,6 +72,27 @@ function getInitialSentenceInputs(): SentenceInput[] {
   }));
 }
 
+function getRandomGroupsAndWords(): { groups: WordGroup[]; words: VerbalMemoryWord[] } {
+  const shuffledGroups = [...WORD_GROUPS].sort(() => Math.random() - 0.5);
+  const selectedGroups = shuffledGroups.slice(0, 5);
+  
+  const allWords: string[] = [];
+  selectedGroups.forEach(group => {
+    const shuffledWords = [...group.words].sort(() => Math.random() - 0.5);
+    const wordsPerGroup = 4;
+    allWords.push(...shuffledWords.slice(0, wordsPerGroup));
+  });
+  
+  const finalWords = allWords.sort(() => Math.random() - 0.5).slice(0, 20);
+  
+  const words: VerbalMemoryWord[] = finalWords.map((word, index) => ({
+    number: index + 1,
+    word,
+  }));
+  
+  return { groups: selectedGroups, words };
+}
+
 export const useVerbalMemoryStore = create<VerbalMemoryStore>()(
   subscribeWithSelector((set, get) => ({
     currentLevel: 1,
@@ -77,6 +100,7 @@ export const useVerbalMemoryStore = create<VerbalMemoryStore>()(
     words: [],
     userInputs: Array(WORDS_PER_GAME).fill(''),
     sentenceInputs: getInitialSentenceInputs(),
+    selectedGroups: [],
     startTime: null,
     endTime: null,
     isCompleted: false,
@@ -86,36 +110,80 @@ export const useVerbalMemoryStore = create<VerbalMemoryStore>()(
 
     startGame: (level: VerbalMemoryLevel = 1) => {
       const startTime = Date.now();
-      const randomWords = getRandomWords();
-      set({
-        currentLevel: level,
-        currentPhase: 'reading',
-        words: randomWords,
-        userInputs: Array(WORDS_PER_GAME).fill(''),
-        sentenceInputs: getInitialSentenceInputs(),
-        startTime,
-        endTime: null,
-        isCompleted: false,
-        validationResult: null,
-        sentenceValidation: null,
-      });
+      let randomWords = getRandomWords();
+      let selectedGroups: WordGroup[] = [];
+      
+      if (level === 6) {
+        const { groups, words } = getRandomGroupsAndWords();
+        randomWords = words;
+        selectedGroups = groups;
+        set({
+          currentLevel: level,
+          currentPhase: 'reading',
+          words: randomWords,
+          userInputs: Array(WORDS_PER_GAME).fill(''),
+          sentenceInputs: getInitialSentenceInputs(),
+          selectedGroups: selectedGroups,
+          startTime,
+          endTime: null,
+          isCompleted: false,
+          validationResult: null,
+          sentenceValidation: null,
+        });
+      } else {
+        set({
+          currentLevel: level,
+          currentPhase: 'reading',
+          words: randomWords,
+          userInputs: Array(WORDS_PER_GAME).fill(''),
+          sentenceInputs: getInitialSentenceInputs(),
+          selectedGroups: [],
+          startTime,
+          endTime: null,
+          isCompleted: false,
+          validationResult: null,
+          sentenceValidation: null,
+        });
+      }
     },
 
     selectLevel: (level: VerbalMemoryLevel) => {
       const startTime = Date.now();
-      const randomWords = getRandomWords();
-      set({
-        currentLevel: level,
-        currentPhase: 'reading',
-        words: randomWords,
-        userInputs: Array(WORDS_PER_GAME).fill(''),
-        sentenceInputs: getInitialSentenceInputs(),
-        startTime,
-        endTime: null,
-        isCompleted: false,
-        validationResult: null,
-        sentenceValidation: null,
-      });
+      let randomWords = getRandomWords();
+      let selectedGroups: WordGroup[] = [];
+      
+      if (level === 6) {
+        const { groups, words } = getRandomGroupsAndWords();
+        randomWords = words;
+        selectedGroups = groups;
+        set({
+          currentLevel: level,
+          currentPhase: 'reading',
+          words: randomWords,
+          userInputs: Array(WORDS_PER_GAME).fill(''),
+          sentenceInputs: getInitialSentenceInputs(),
+          selectedGroups: selectedGroups,
+          startTime,
+          endTime: null,
+          isCompleted: false,
+          validationResult: null,
+          sentenceValidation: null,
+        });
+      } else {
+        set({
+          currentLevel: level,
+          currentPhase: 'reading',
+          words: randomWords,
+          userInputs: Array(WORDS_PER_GAME).fill(''),
+          sentenceInputs: getInitialSentenceInputs(),
+          selectedGroups: [],
+          startTime,
+          endTime: null,
+          isCompleted: false,
+          validationResult: null,
+          sentenceValidation: null,
+        });
+      }
     },
 
     continueToRecall: () => {
@@ -220,7 +288,7 @@ export const useVerbalMemoryStore = create<VerbalMemoryStore>()(
             isCorrect,
           });
         }
-      } else {
+      } else if (currentLevel === 4) {
         // Level 4: Compare any order (free recall)
         const correctWordList = words.map(w => w.word.toUpperCase());
         const uniqueUserInputs = [...new Set(userInputs.map(i => i?.trim().toUpperCase() || ''))];
@@ -233,6 +301,28 @@ export const useVerbalMemoryStore = create<VerbalMemoryStore>()(
 
         // For details, show all 20 original words
         words.forEach((wordItem, index) => {
+          const correctWord = wordItem.word.toUpperCase();
+          const isCorrect = uniqueUserInputs.includes(correctWord);
+          
+          details.push({
+            userWord: uniqueUserInputs.includes(correctWord) ? correctWord : '',
+            correctWord,
+            isCorrect,
+          });
+        });
+      } else {
+        // Level 5 & 6: Compare any order (free recall)
+        const correctWordList = words.map(w => w.word.toUpperCase());
+        const uniqueUserInputs = [...new Set(userInputs.map(i => i?.trim().toUpperCase() || ''))];
+        
+        uniqueUserInputs.forEach(userWord => {
+          if (userWord && correctWordList.includes(userWord)) {
+            correctWords++;
+          }
+        });
+
+        // For details, show all 20 original words
+        words.forEach((wordItem) => {
           const correctWord = wordItem.word.toUpperCase();
           const isCorrect = uniqueUserInputs.includes(correctWord);
           
@@ -371,6 +461,7 @@ export const useVerbalMemoryStore = create<VerbalMemoryStore>()(
         words: [],
         userInputs: Array(WORDS_PER_GAME).fill(''),
         sentenceInputs: getInitialSentenceInputs(),
+        selectedGroups: [],
         startTime: null,
         endTime: null,
         isCompleted: false,

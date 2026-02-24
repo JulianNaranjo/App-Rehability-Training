@@ -33,6 +33,16 @@ const levels: { id: VerbalMemoryLevel; title: string; description: string }[] = 
     title: 'Nivel 3',
     description: 'Crear frases',
   },
+  {
+    id: 5,
+    title: 'Nivel 5',
+    description: 'Recordar palabras',
+  },
+  {
+    id: 6,
+    title: 'Nivel 6',
+    description: 'Agrupar palabras',
+  },
 ];
 
 export function LevelSelector({
