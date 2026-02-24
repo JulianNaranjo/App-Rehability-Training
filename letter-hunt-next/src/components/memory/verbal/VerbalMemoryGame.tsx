@@ -3,7 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useVerbalMemoryStore } from '@/store/verbal-memory-store';
 import { WordListDisplay } from './WordListDisplay';
+import { WordTableDisplay } from './WordTableDisplay';
 import { WordRecallInput } from './WordRecallInput';
+import { WordTableInput } from './WordTableInput';
+import { GroupInput } from './GroupInput';
 import { SentenceInputComponent } from './SentenceInput';
 import { LevelSelector } from './LevelSelector';
 import { Button } from '@/components/ui/Button';
@@ -47,6 +50,7 @@ export function VerbalMemoryGame({ className }: VerbalMemoryGameProps) {
     validateSentences,
     resetGame,
     getTimeElapsed,
+    selectedGroups,
   } = useVerbalMemoryStore();
 
   const [elapsedTime, setElapsedTime] = useState(0);
@@ -78,7 +82,7 @@ export function VerbalMemoryGame({ className }: VerbalMemoryGameProps) {
     setElapsedTime(0);
   };
 
-  const handleLevelSelect = (level: 1 | 2 | 3 | 4) => {
+  const handleLevelSelect = (level: 1 | 2 | 3 | 4 | 5 | 6) => {
     selectLevel(level);
     setElapsedTime(0);
   };
@@ -99,6 +103,10 @@ export function VerbalMemoryGame({ className }: VerbalMemoryGameProps) {
         return 'Crear frases';
       case 4:
         return 'Recordar con frases';
+      case 5:
+        return 'Recordar palabras';
+      case 6:
+        return 'Agrupar palabras';
       default:
         return '';
     }
@@ -114,6 +122,10 @@ export function VerbalMemoryGame({ className }: VerbalMemoryGameProps) {
         return 'Lea con atención la siguiente lista de palabras. Memorícelas y cree frases utilizando dos palabras de la lista. Cuando esté listo, presione el botón "Continuar" para pasar a la siguiente fase.';
       case 4:
         return 'Lea con atención la siguiente lista de palabras. Memorícelas y cree frases en su mente utilizándolas. Cuando esté listo, presione el botón "Continuar" para pasar a la siguiente fase.';
+      case 5:
+        return 'Lea con atención las siguientes palabras. Cuando esté listo, presione el botón "Continuar" para pasar a la siguiente fase.';
+      case 6:
+        return 'Lea con atención las siguientes palabras. Cuando esté listo, presione el botón "Continuar" para pasar a la siguiente fase.';
       default:
         return '';
     }
@@ -168,7 +180,11 @@ export function VerbalMemoryGame({ className }: VerbalMemoryGameProps) {
             </div>
           </Card>
 
-          {currentLevel !== 4 && <WordListDisplay words={words} />}
+          {currentLevel === 5 ? (
+            <WordTableDisplay words={words} />
+          ) : currentLevel !== 4 ? (
+            <WordListDisplay words={words} />
+          ) : null}
 
           <div className="flex justify-center">
             <Button
@@ -185,12 +201,27 @@ export function VerbalMemoryGame({ className }: VerbalMemoryGameProps) {
 
       {currentPhase === 'recall' && (
         <>
-          <WordRecallInput
-            inputCount={words.length}
-            userInputs={userInputs}
-            onInputChange={updateInput}
-            level={currentLevel}
-          />
+          {currentLevel === 6 ? (
+            <GroupInput
+              groups={selectedGroups}
+              userInputs={userInputs}
+              onInputChange={updateInput}
+            />
+          ) : currentLevel === 5 ? (
+            <WordTableInput
+              inputCount={words.length}
+              userInputs={userInputs}
+              onInputChange={updateInput}
+              level={currentLevel}
+            />
+          ) : (
+            <WordRecallInput
+              inputCount={words.length}
+              userInputs={userInputs}
+              onInputChange={updateInput}
+              level={currentLevel}
+            />
+          )}
 
           <div className="flex justify-center">
             <Button

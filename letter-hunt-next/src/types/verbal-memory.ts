@@ -7,7 +7,7 @@
  */
 
 export type VerbalMemoryPhase = 'reading' | 'recall' | 'sentences' | 'results';
-export type VerbalMemoryLevel = 1 | 2 | 3 | 4;
+export type VerbalMemoryLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface VerbalMemoryWord {
   number: number;
@@ -56,6 +56,7 @@ export interface VerbalMemoryState {
   words: VerbalMemoryWord[];
   userInputs: string[];
   sentenceInputs: SentenceInput[];
+  selectedGroups: WordGroup[];
   startTime: number | null;
   endTime: number | null;
   isCompleted: boolean;
@@ -130,4 +131,82 @@ export const WORD_BANK: string[] = [
   'CAMPO',
   'ESTRELLA',
   'CORAZON',
+  'ATLETISMO',
+  'BALONCESTO',
+  'LECHUGA',
+  'INGENIERIA',
+  'DESTORNILLADOR',
+  'BROCOLI',
+  'SIERRA',
+  'DERECHO',
+  'TENIS',
+  'JUGO',
+  'MARTILLO',
+  'MEDICINA',
+  'CAFE',
+  'ZANAHORIA',
+  'ODONTOLOGIA',
+  'NATACION',
+  'LECHE',
+  'CEBOLLA',
+  'CLAVO',
+];
+
+export interface WordGroup {
+  id: string;
+  name: string;
+  words: string[];
+}
+
+export const WORD_GROUPS: WordGroup[] = [
+  {
+    id: 'deportes',
+    name: 'Deportes',
+    words: ['ATLETISMO', 'BALONCESTO', 'TENIS', 'NATACION'],
+  },
+  {
+    id: 'verduras',
+    name: 'Verduras',
+    words: ['LECHUGA', 'BROCOLI', 'ZANAHORIA', 'CEBOLLA'],
+  },
+  {
+    id: 'bebidas',
+    name: 'Bebidas',
+    words: ['CAFE', 'JUGO', 'LECHE'],
+  },
+  {
+    id: 'profesiones',
+    name: 'Profesiones',
+    words: ['INGENIERIA', 'ODONTOLOGIA', 'DERECHO', 'MEDICINA'],
+  },
+  {
+    id: 'herramientas',
+    name: 'Herramientas',
+    words: ['DESTORNILLADOR', 'SIERRA', 'MARTILLO', 'CLAVO'],
+  },
+  {
+    id: 'objetos',
+    name: 'Objetos Cotidianos',
+    words: ['CASA', 'PERRO', 'GATO', 'FLOR', 'SOL', 'LUNA', 'ARBOL', 'NUBE', 'AGUA', 'FUEGO', 'TIERRA', 'CIELO', 'PUERTA', 'VENTANA'],
+  },
+  {
+    id: 'muebles',
+    name: 'Muebles y Casa',
+    words: ['MESA', 'SILLA', 'CAMA', 'COCINA', 'LIBRO', 'LAPIZ', 'RELOJ', 'ESPEJO'],
+  },
+  {
+    id: 'actividades',
+    name: 'Actividades y Lugares',
+    words: ['MUSEO', 'PLAYA', 'PARQUE', 'CALLE', 'PUENTE', 'TORRE', 'CAMPO', 'BAÑO', 'RIO', 'MAR'],
+  },
+  {
+    id: 'ropa',
+    name: 'Ropa y Accesorios',
+    words: ['CAMISA', 'GORRO', 'LANA', 'BALON', 'CUERDA'],
+  },
+  {
+    id: 'animales',
+    name: 'Animales y Naturaleza',
+    words: ['MARIPOSA', 'HOJAS', 'ANILLO', 'COCO', 'JARRA', 'DARDO', 'SACO', 'CARRO', 'VELA', 'CORAZON', 'ARCO', 'MUSEO'],
+  },
 ];
