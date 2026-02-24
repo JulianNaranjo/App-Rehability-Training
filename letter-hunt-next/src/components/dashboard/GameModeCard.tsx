@@ -19,16 +19,17 @@ import {
   Eye,
   Layers,
   Brain,
+  BookOpen,
   type LucideIcon
 } from 'lucide-react';
 
-// Map icon names to Lucide components
 const iconMap: Record<string, LucideIcon> = {
   MousePointerClick,
   Calculator,
   Eye,
   Layers,
   Brain,
+  BookOpen,
 };
 
 interface GameModeCardProps {

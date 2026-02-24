@@ -28,14 +28,16 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
       if (modeId === 'working-memory') {
         return '/memory/working';
       }
-      // Future memory modes
+      if (modeId === 'verbal-memory') {
+        return '/memory/verbal';
+      }
       return '';
     }
     return '';
   };
 
   const isModeAvailable = (modeId: string): boolean => {
-    return isAttentionGameMode(modeId) || modeId === 'working-memory';
+    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory';
   };
 
   return (
