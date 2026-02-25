@@ -31,13 +31,16 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
       if (modeId === 'verbal-memory') {
         return '/memory/verbal';
       }
+      if (modeId === 'visual-memory') {
+        return '/memory/visual';
+      }
       return '';
     }
     return '';
   };
 
   const isModeAvailable = (modeId: string): boolean => {
-    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory';
+    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory' || modeId === 'visual-memory';
   };
 
   return (
