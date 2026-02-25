@@ -34,13 +34,16 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
       if (modeId === 'visual-memory') {
         return '/memory/visual';
       }
+      if (modeId === 'visual-verbal') {
+        return '/memory/visual-verbal';
+      }
       return '';
     }
     return '';
   };
 
   const isModeAvailable = (modeId: string): boolean => {
-    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory' || modeId === 'visual-memory';
+    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory' || modeId === 'visual-memory' || modeId === 'visual-verbal';
   };
 
   return (
