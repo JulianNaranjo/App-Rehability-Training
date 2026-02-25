@@ -14,7 +14,7 @@ import type { GameMode } from '@/types/game';
  */
 export interface GameModeConfig {
   /** Unique identifier for the mode */
-  id: GameMode | 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory';
+  id: GameMode | 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' | 'visual-verbal';
   /** Display title */
   title: string;
   /** Lucide icon name */
@@ -131,6 +131,15 @@ export const dashboardConfig: DashboardConfig = {
           instructions: 'Observa el patrón de letras durante unos segundos y luego reproduce la secuencia exacta. ¡Desafía tu memoria visual!',
         },
         {
+          id: 'visual-verbal',
+          title: 'Memoria Viso-Verbal',
+          icon: 'Eye',
+          gradientFrom: 'from-primary-400',
+          gradientTo: 'to-primary-600',
+          shortDescription: 'Imágenes y nombres',
+          instructions: 'Observa las imágenes con sus nombres y luego escribe el nombre de cada objeto de memoria. ¡Combina memoria visual y verbal!',
+        },
+        {
           id: 'matching-pairs',
           title: 'Pares/Matching',
           icon: 'Layers',
@@ -178,6 +187,6 @@ export function isAttentionGameMode(mode: string): mode is GameMode {
 /**
  * Type guard for memory game modes
  */
-export function isMemoryGameMode(mode: string): mode is 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' {
-  return mode === 'visual-memory' || mode === 'matching-pairs' || mode === 'working-memory' || mode === 'verbal-memory';
+export function isMemoryGameMode(mode: string): mode is 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' | 'visual-verbal' {
+  return mode === 'visual-memory' || mode === 'matching-pairs' || mode === 'working-memory' || mode === 'verbal-memory' || mode === 'visual-verbal';
 }

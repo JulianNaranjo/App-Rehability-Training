@@ -239,3 +239,18 @@ src/
 - Use accessibility selectors: `page.getByRole('button')`
 - Test user flows, not implementation
 - Run tests before committing
+
+## Engram Memory (Persistent Context)
+
+This project uses Engram for persistent memory across sessions.
+
+**Session Start:**
+- Call `mem_context` to recover previous session state before continuing
+
+**Proactive Saving:**
+- After significant work (bugs fixed, architecture decisions, patterns established), call `mem_save` without waiting for user request
+
+**Tools available:**
+- `mem_save` - Save important observations (bugs, decisions, patterns)
+- `mem_search <query>` - Search memory
+- `mem_context` - Get recent session context
