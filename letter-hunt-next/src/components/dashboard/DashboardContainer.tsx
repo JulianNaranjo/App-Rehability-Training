@@ -37,13 +37,16 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
       if (modeId === 'visual-verbal') {
         return '/memory/visual-verbal';
       }
+      if (modeId === 'visual-spatial') {
+        return '/memory/visual-spatial';
+      }
       return '';
     }
     return '';
   };
 
   const isModeAvailable = (modeId: string): boolean => {
-    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory' || modeId === 'visual-memory' || modeId === 'visual-verbal';
+    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory' || modeId === 'visual-memory' || modeId === 'visual-verbal' || modeId === 'visual-spatial';
   };
 
   return (

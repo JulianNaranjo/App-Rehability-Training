@@ -14,7 +14,7 @@ import type { GameMode } from '@/types/game';
  */
 export interface GameModeConfig {
   /** Unique identifier for the mode */
-  id: GameMode | 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' | 'visual-verbal';
+  id: GameMode | 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' | 'visual-verbal' | 'visual-spatial';
   /** Display title */
   title: string;
   /** Lucide icon name */
@@ -140,6 +140,15 @@ export const dashboardConfig: DashboardConfig = {
           instructions: 'Observa las imágenes con sus nombres y luego escribe el nombre de cada objeto de memoria. ¡Combina memoria visual y verbal!',
         },
         {
+          id: 'visual-spatial',
+          title: 'Memoria Viso-Espacial',
+          icon: 'Eye',
+          gradientFrom: 'from-teal-400',
+          gradientTo: 'to-teal-600',
+          shortDescription: 'Posiciones de iconos',
+          instructions: 'Observa las posiciones de los iconos por unos segundos y luego selecciona dónde estaban. ¡Entrena tu memoria espacial!',
+        },
+        {
           id: 'matching-pairs',
           title: 'Pares/Matching',
           icon: 'Layers',
@@ -187,6 +196,6 @@ export function isAttentionGameMode(mode: string): mode is GameMode {
 /**
  * Type guard for memory game modes
  */
-export function isMemoryGameMode(mode: string): mode is 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' | 'visual-verbal' {
-  return mode === 'visual-memory' || mode === 'matching-pairs' || mode === 'working-memory' || mode === 'verbal-memory' || mode === 'visual-verbal';
+export function isMemoryGameMode(mode: string): mode is 'visual-memory' | 'matching-pairs' | 'working-memory' | 'verbal-memory' | 'visual-verbal' | 'visual-spatial' {
+  return mode === 'visual-memory' || mode === 'matching-pairs' || mode === 'working-memory' || mode === 'verbal-memory' || mode === 'visual-verbal' || mode === 'visual-spatial';
 }
