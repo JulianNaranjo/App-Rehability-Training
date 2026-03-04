@@ -1,6 +1,11 @@
 'use client';
 
-import { VisualSpatialMemoryGame } from '@/components/memory/visual-spatial/VisualSpatialMemoryGame';
+import dynamic from 'next/dynamic';
+
+const VisualSpatialMemoryGame = dynamic(
+  () => import('@/components/memory/visual-spatial/VisualSpatialMemoryGame').then(m => m.VisualSpatialMemoryGame),
+  { ssr: false, loading: () => <div className="flex justify-center p-12 text-text-secondary">Cargando...</div> }
+);
 
 /**
  * Visual-Spatial Memory Game Page

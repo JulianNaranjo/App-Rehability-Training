@@ -1,6 +1,6 @@
 import { GameTile } from "./GameTile";
-import { cn } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { cn, getAnimationDuration } from "@/lib/utils";
+import { useState, useEffect, useCallback } from "react";
 import { useGameStore } from "@/store/game-store";
 import { getTileStatus } from "@/lib/game-utils";
 
@@ -24,14 +24,18 @@ export function GameBoard({
     solutionIndices,
     gameState,
     gameMode,
+    settings,
   } = useGameStore();
+
+  const animEnabled = settings.animationsEnabled;
+  const reducedMotion = settings.accessibility.reducedMotion;
 
   const [animatingTiles, setAnimatingTiles] = useState<Set<number>>(new Set());
   const [animationTypes, setAnimationTypes] = useState<Map<number, string>>(
     new Map(),
   );
 
-  const handleTileClick = (index: number) => {
+  const handleTileClick = useCallback((index: number) => {
     if (gameState !== "playing" || gameMode !== "selection") return;
 
     const isCurrentlySelected = selectedIndices.has(index);
@@ -68,8 +72,8 @@ export function GameBoard({
         newMap.delete(index);
         return newMap;
       });
-    }, 300);
-  };
+    }, getAnimationDuration(300, animEnabled, reducedMotion));
+  }, [gameState, gameMode, selectedIndices, solutionIndices, onTileSelect, animEnabled, reducedMotion]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (gameState !== "playing" || gameMode !== "selection") return;
@@ -133,11 +137,13 @@ export function GameBoard({
         }
       });
 
+      const stagger = getAnimationDuration(50, animEnabled, reducedMotion);
+
       correctTiles.forEach((index, i) => {
         setTimeout(() => {
           setAnimatingTiles((prev) => new Set(prev).add(index));
           setAnimationTypes((prev) => new Map(prev).set(index, "correct"));
-        }, i * 50);
+        }, i * stagger);
       });
 
       wrongTiles.forEach((index, i) => {
@@ -146,7 +152,7 @@ export function GameBoard({
             setAnimatingTiles((prev) => new Set(prev).add(index));
             setAnimationTypes((prev) => new Map(prev).set(index, "wrong"));
           },
-          correctTiles.length * 50 + i * 50,
+          correctTiles.length * stagger + i * stagger,
         );
       });
 
@@ -155,10 +161,10 @@ export function GameBoard({
           setAnimatingTiles(new Set());
           setAnimationTypes(new Map());
         },
-        (correctTiles.length + wrongTiles.length) * 50 + 1000,
+        (correctTiles.length + wrongTiles.length) * stagger + getAnimationDuration(1000, animEnabled, reducedMotion),
       );
     }
-  }, [gameState, selectedIndices, solutionIndices]);
+  }, [gameState, selectedIndices, solutionIndices, animEnabled, reducedMotion]);
 
   const gridCols = board.length === 225 ? "grid-cols-15" : "grid-cols-10";
 
@@ -204,7 +210,7 @@ export function GameBoard({
             status={status}
             isAnimating={isAnimating}
             animationType={animationType}
-            onClick={() => handleTileClick(index)}
+            onTileClick={handleTileClick}
             disabled={gameState !== "playing"}
             size={tileSize}
             showHint={showHints && status === "target"}

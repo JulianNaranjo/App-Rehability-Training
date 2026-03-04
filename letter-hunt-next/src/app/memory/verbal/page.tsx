@@ -10,8 +10,13 @@
  */
 
 import { useEffect } from 'react';
-import { VerbalMemoryGame } from '@/components/memory/verbal/VerbalMemoryGame';
+import dynamic from 'next/dynamic';
 import { useVerbalMemoryStore } from '@/store/verbal-memory-store';
+
+const VerbalMemoryGame = dynamic(
+  () => import('@/components/memory/verbal/VerbalMemoryGame').then(m => m.VerbalMemoryGame),
+  { ssr: false, loading: () => <div className="flex justify-center p-12 text-text-secondary">Cargando...</div> }
+);
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';

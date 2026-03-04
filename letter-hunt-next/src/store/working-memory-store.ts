@@ -276,8 +276,13 @@ export const useWorkingMemoryStore = create<WorkingMemoryStore>()(
       const startTime = Date.now();
 
       // For level 7, generate initial series
+      const level7Series = generateRandomSeries();
       const newSeriesState = isLevel7 
-        ? { ...initialSeriesState, currentSeries: generateRandomSeries() }
+        ? {
+            ...initialSeriesState,
+            currentSeries: level7Series,
+            userInputs: Array(level7Series.length).fill(''),
+          }
         : initialSeriesState;
 
       set({
@@ -644,6 +649,7 @@ export const useWorkingMemoryStore = create<WorkingMemoryStore>()(
         seriesState: {
           ...initialSeriesState,
           currentSeries: newSeries,
+          userInputs: Array(newSeries.length).fill(''),
         },
       });
       
@@ -688,6 +694,7 @@ export const useWorkingMemoryStore = create<WorkingMemoryStore>()(
             phase: 'input-normal',
             currentDigitIndex: 0,
             isAnimating: false,
+            userInputs: Array(seriesState.currentSeries.length).fill(''),
           },
         });
       } else {
