@@ -1,6 +1,11 @@
 'use client';
 
-import { VisoVerbalGame } from '@/components/memory/visual-verbal/VisoVerbalGame';
+import dynamic from 'next/dynamic';
+
+const VisoVerbalGame = dynamic(
+  () => import('@/components/memory/visual-verbal/VisoVerbalGame').then(m => m.VisoVerbalGame),
+  { ssr: false, loading: () => <div className="flex justify-center p-12 text-text-secondary">Cargando...</div> }
+);
 
 export default function VisualVerbalMemoryPage() {
   return (

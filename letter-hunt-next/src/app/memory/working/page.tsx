@@ -10,8 +10,13 @@
  */
 
 import { useEffect } from 'react';
-import { WorkingMemoryGame } from '@/components/memory/WorkingMemoryGame';
+import dynamic from 'next/dynamic';
 import { useWorkingMemoryStore } from '@/store/working-memory-store';
+
+const WorkingMemoryGame = dynamic(
+  () => import('@/components/memory/WorkingMemoryGame').then(m => m.WorkingMemoryGame),
+  { ssr: false, loading: () => <div className="flex justify-center p-12 text-text-secondary">Cargando...</div> }
+);
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';

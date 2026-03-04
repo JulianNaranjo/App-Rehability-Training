@@ -11,7 +11,7 @@
 
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { GameModeConfig } from '@/skills/dashboard/dashboard-logic';
 import {
   MousePointerClick,
@@ -39,7 +39,7 @@ interface GameModeCardProps {
   className?: string;
 }
 
-export function GameModeCard({ 
+export const GameModeCard = memo(function GameModeCard({ 
   mode, 
   href,
   isComingSoon = false,
@@ -127,4 +127,4 @@ export function GameModeCard({
       {cardContent}
     </Link>
   );
-}
+});

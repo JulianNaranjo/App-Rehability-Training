@@ -31,6 +31,7 @@ function NavLink({ href, label, icon, isActive }: NavLinkProps) {
   return (
     <Link
       href={href}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(
         'flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200',
         'hover:bg-white/10',

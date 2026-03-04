@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { memo, useState } from "react";
 import { SYMBOLS } from "@/types/game";
 
 interface GameTileProps {
@@ -8,19 +8,19 @@ interface GameTileProps {
   status: "empty" | "target" | "selected" | "correct" | "wrong";
   isAnimating: boolean;
   animationType?: "select" | "deselect" | "correct" | "wrong" | "celebrate";
-  onClick: () => void;
+  onTileClick: (index: number) => void;
   disabled?: boolean;
   size?: "sm" | "md" | "lg";
   showHint?: boolean;
 }
 
-export function GameTile({
+export const GameTile = memo(function GameTile({
   letter,
   index,
   status,
   isAnimating,
   animationType = "select",
-  onClick,
+  onTileClick,
   disabled = false,
   size = "md",
   showHint = false,
@@ -75,10 +75,11 @@ export function GameTile({
   const handleMouseDown = () => setIsPressed(true);
   const handleMouseUp = () => setIsPressed(false);
   const handleMouseLeave = () => setIsPressed(false);
+  const handleClick = () => onTileClick(index);
 
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
@@ -123,4 +124,4 @@ export function GameTile({
       )}
     </button>
   );
-}
+});
