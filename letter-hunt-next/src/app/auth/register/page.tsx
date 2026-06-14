@@ -1,0 +1,111 @@
+"use client";
+
+/**
+ * Register Page
+ *
+ * Creates a new account via the existing auth store and redirects to
+ * `/dashboard` on success. Renders any store error (validation or
+ * unexpected failure) under the password field.
+ *
+ * @module RegisterPage
+ */
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { type FormEvent, useState } from "react";
+
+import { Button, Card, Input } from "@/components/ui";
+import { useAuthStore } from "@/store/auth-store";
+
+export default function RegisterPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+
+  const register = useAuthStore((state) => state.register);
+  const status = useAuthStore((state) => state.status);
+  const error = useAuthStore((state) => state.error);
+  const router = useRouter();
+
+  const loading = status === "loading";
+
+  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (loading) {
+      return;
+    }
+
+    const success = await register({ email, password, displayName });
+
+    if (success) {
+      router.push("/dashboard");
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto space-y-8">
+      <header className="text-center space-y-2">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+          Crear cuenta
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300">
+          Regístrate para empezar a jugar.
+        </p>
+      </header>
+
+      <Card variant="default" padding="lg">
+        <form onSubmit={onSubmit} className="space-y-6">
+          <Input
+            label="Nombre"
+            type="text"
+            value={displayName}
+            onChange={(event) => setDisplayName(event.target.value)}
+            required
+            disabled={loading}
+            autoComplete="name"
+          />
+
+          <Input
+            label="Correo electrónico"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+            disabled={loading}
+            autoComplete="email"
+          />
+
+          <Input
+            label="Contraseña"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+            disabled={loading}
+            autoComplete="new-password"
+            error={error}
+          />
+
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            loading={loading}
+            disabled={loading}
+            className="w-full"
+          >
+            Crear cuenta
+          </Button>
+        </form>
+      </Card>
+
+      <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+        ¿Ya tienes una cuenta?{" "}
+        <Link href="/auth/login" className="text-primary-600 dark:text-primary-400 font-medium">
+          Inicia sesión
+        </Link>
+      </p>
+    </div>
+  );
+}
