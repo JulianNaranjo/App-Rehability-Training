@@ -4,8 +4,9 @@
  * Login Page
  *
  * Authenticates a user via the existing auth store and redirects to
- * `/dashboard` on success. Renders any store error (invalid
- * credentials or unexpected failure) under the password field.
+ * `/dashboard` on success. Renders the error from the user's own submit
+ * attempt under the password field — never a global/session-bootstrap
+ * error, which must not surface before the user interacts.
  *
  * @module LoginPage
  */
@@ -20,10 +21,10 @@ import { useAuthStore } from "@/store/auth-store";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState<string | undefined>(undefined);
 
   const login = useAuthStore((state) => state.login);
   const status = useAuthStore((state) => state.status);
-  const error = useAuthStore((state) => state.error);
   const router = useRouter();
 
   const loading = status === "loading";
@@ -35,11 +36,16 @@ export default function LoginPage() {
       return;
     }
 
+    setFormError(undefined);
+
     const success = await login({ email, password });
 
     if (success) {
       router.push("/dashboard");
+      return;
     }
+
+    setFormError(useAuthStore.getState().error);
   };
 
   return (
@@ -73,7 +79,7 @@ export default function LoginPage() {
             required
             disabled={loading}
             autoComplete="current-password"
-            error={error}
+            error={formError}
           />
 
           <Button

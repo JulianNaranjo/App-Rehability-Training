@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mockUser } from "@/lib/api/__mocks__/handlers";
 import { server } from "@/lib/api/__mocks__/server";
 import { API_BASE_URL } from "@/lib/api/client";
-import { UNAUTHORIZED_MESSAGE } from "@/lib/api/errors";
+import { UNAUTHORIZED_MESSAGE, UNKNOWN_ERROR_MESSAGE } from "@/lib/api/errors";
 import { useAuthStore } from "@/store/auth-store";
 
 import LoginPage from "./page";
@@ -33,6 +33,16 @@ describe("LoginPage", () => {
     expect(screen.getByLabelText(/correo electrónico/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/contraseña/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /entrar/i })).toBeInTheDocument();
+  });
+
+  it("does not surface a global/bootstrap error before the user submits", () => {
+    // Simulate a failed session bootstrap (e.g. backend unreachable),
+    // which sets the shared store error. The form must stay clean.
+    useAuthStore.setState({ user: null, status: "error", error: UNKNOWN_ERROR_MESSAGE });
+
+    render(<LoginPage />);
+
+    expect(screen.queryByText(UNKNOWN_ERROR_MESSAGE)).not.toBeInTheDocument();
   });
 
   it("navigates to /dashboard on successful login", async () => {

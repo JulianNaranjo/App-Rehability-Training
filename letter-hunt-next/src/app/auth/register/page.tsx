@@ -4,8 +4,9 @@
  * Register Page
  *
  * Creates a new account via the existing auth store and redirects to
- * `/dashboard` on success. Renders any store error (validation or
- * unexpected failure) under the password field.
+ * `/dashboard` on success. Renders the error from the user's own submit
+ * attempt under the password field — never a global/session-bootstrap
+ * error, which must not surface before the user interacts.
  *
  * @module RegisterPage
  */
@@ -21,10 +22,10 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [formError, setFormError] = useState<string | undefined>(undefined);
 
   const register = useAuthStore((state) => state.register);
   const status = useAuthStore((state) => state.status);
-  const error = useAuthStore((state) => state.error);
   const router = useRouter();
 
   const loading = status === "loading";
@@ -36,11 +37,16 @@ export default function RegisterPage() {
       return;
     }
 
+    setFormError(undefined);
+
     const success = await register({ email, password, displayName });
 
     if (success) {
       router.push("/dashboard");
+      return;
     }
+
+    setFormError(useAuthStore.getState().error);
   };
 
   return (
@@ -84,7 +90,7 @@ export default function RegisterPage() {
             required
             disabled={loading}
             autoComplete="new-password"
-            error={error}
+            error={formError}
           />
 
           <Button
