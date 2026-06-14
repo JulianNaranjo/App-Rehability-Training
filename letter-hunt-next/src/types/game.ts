@@ -169,9 +169,10 @@ export type GameActionCreator<T extends GameAction['type'], P = any> = P extends
 
 // Type guards
 export function isValidGameState(state: any): state is GameState {
-  return state && 
-         typeof state.board === 'object' &&
-         typeof state.targetLetter === 'string' &&
+  return state != null &&
+         Array.isArray(state.board) &&
+         Array.isArray(state.targetLetters) &&
+         state.targetLetters.every((t: unknown) => typeof t === 'string') &&
          typeof state.currentLevel === 'number' &&
          ['idle', 'playing', 'checking', 'won', 'lost', 'paused'].includes(state.gameState);
 }

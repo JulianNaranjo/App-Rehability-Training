@@ -11,22 +11,25 @@
 
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import type { GameModeConfig } from '@/skills/dashboard/dashboard-logic';
-import { 
-  MousePointerClick, 
-  Calculator, 
-  Eye, 
+import {
+  MousePointerClick,
+  Calculator,
+  Eye,
   Layers,
-  type LucideIcon 
+  Brain,
+  BookOpen,
+  type LucideIcon
 } from 'lucide-react';
 
-// Map icon names to Lucide components
 const iconMap: Record<string, LucideIcon> = {
   MousePointerClick,
   Calculator,
   Eye,
   Layers,
+  Brain,
+  BookOpen,
 };
 
 interface GameModeCardProps {
@@ -36,7 +39,7 @@ interface GameModeCardProps {
   className?: string;
 }
 
-export function GameModeCard({ 
+export const GameModeCard = memo(function GameModeCard({ 
   mode, 
   href,
   isComingSoon = false,
@@ -124,4 +127,4 @@ export function GameModeCard({
       {cardContent}
     </Link>
   );
-}
+});

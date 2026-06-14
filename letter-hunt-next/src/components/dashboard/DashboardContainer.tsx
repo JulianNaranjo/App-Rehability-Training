@@ -11,7 +11,7 @@
 
 import { GameModeCard } from './GameModeCard';
 import { GameInstructions } from './GameInstructions';
-import { dashboardConfig, isAttentionGameMode } from '@/skills/dashboard/dashboard-logic';
+import { dashboardConfig, isAttentionGameMode, isMemoryGameMode } from '@/skills/dashboard/dashboard-logic';
 import { cn } from '@/lib/utils';
 import { Brain, Sparkles } from 'lucide-react';
 
@@ -24,11 +24,29 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
     if (isAttentionGameMode(modeId)) {
       return `/game/${modeId}`;
     }
+    if (isMemoryGameMode(modeId)) {
+      if (modeId === 'working-memory') {
+        return '/memory/working';
+      }
+      if (modeId === 'verbal-memory') {
+        return '/memory/verbal';
+      }
+      if (modeId === 'visual-memory') {
+        return '/memory/visual';
+      }
+      if (modeId === 'visual-verbal') {
+        return '/memory/visual-verbal';
+      }
+      if (modeId === 'visual-spatial') {
+        return '/memory/visual-spatial';
+      }
+      return '';
+    }
     return '';
   };
 
   const isModeAvailable = (modeId: string): boolean => {
-    return isAttentionGameMode(modeId);
+    return isAttentionGameMode(modeId) || modeId === 'working-memory' || modeId === 'verbal-memory' || modeId === 'visual-memory' || modeId === 'visual-verbal' || modeId === 'visual-spatial';
   };
 
   return (
