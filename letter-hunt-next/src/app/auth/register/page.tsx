@@ -50,17 +50,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-8">
+    <div className="max-w-md mx-auto space-y-8 py-10">
       <header className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+        <h1 className="text-3xl font-bold text-text-primary">
           Crear cuenta
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="text-text-secondary">
           Regístrate para empezar a jugar.
         </p>
       </header>
 
-      <Card variant="default" padding="lg">
+      <Card variant="elevated" padding="lg">
         <form onSubmit={onSubmit} className="space-y-6">
           <Input
             label="Nombre"
@@ -106,9 +106,9 @@ export default function RegisterPage() {
         </form>
       </Card>
 
-      <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+      <p className="text-center text-sm text-text-secondary">
         ¿Ya tienes una cuenta?{" "}
-        <Link href="/auth/login" className="text-primary-600 dark:text-primary-400 font-medium">
+        <Link href="/auth/login" className="text-primary-600 font-medium hover:text-primary-700">
           Inicia sesión
         </Link>
       </p>
