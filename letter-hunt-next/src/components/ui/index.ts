@@ -6,6 +6,8 @@
  * @module ui
  */
 
+export { AuthError } from './AuthError';
+export { AuthGate } from './AuthGate';
 export { Button } from './Button';
 export { Card } from './Card';
 export { Input } from './Input';
