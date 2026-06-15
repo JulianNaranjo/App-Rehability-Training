@@ -15,6 +15,7 @@ import { GameBoardContainer } from '@/components/dashboard';
 import { useGameStore } from '@/store/game-store';
 import { isAttentionGameMode } from '@/skills/dashboard/dashboard-logic';
 import type { GameMode } from '@/types/game';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export default function GamePage() {
   const params = useParams();
@@ -40,8 +41,10 @@ export default function GamePage() {
   }, [mode, generateNewGame, resetGame]);
 
   return (
-    <div className="space-y-6">
-      <GameBoardContainer />
-    </div>
+    <RequireAuth>
+      <div className="space-y-6">
+        <GameBoardContainer />
+      </div>
+    </RequireAuth>
   );
 }

@@ -10,11 +10,14 @@
  */
 
 import { DashboardContainer } from '@/components/dashboard';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
-      <DashboardContainer />
-    </div>
+    <RequireAuth>
+      <div className="space-y-8">
+        <DashboardContainer />
+      </div>
+    </RequireAuth>
   );
 }

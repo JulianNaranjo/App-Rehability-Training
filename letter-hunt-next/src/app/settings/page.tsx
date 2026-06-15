@@ -14,6 +14,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Switch';
 import { Settings, Volume2, Eye, Zap, Save, RotateCcw } from 'lucide-react';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export default function SettingsPage() {
   const { settings, updateSettings, loadSettings } = useGameStore();
@@ -55,7 +56,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <RequireAuth>
+      <div className="space-y-8">
       {/* Page Header */}
       <header className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
@@ -186,6 +188,7 @@ export default function SettingsPage() {
         <Save className="w-4 h-4" />
         <span>Los cambios se guardan automáticamente</span>
       </div>
-    </div>
+      </div>
+    </RequireAuth>
   );
 }

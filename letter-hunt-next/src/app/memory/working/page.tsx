@@ -20,31 +20,34 @@ const WorkingMemoryGame = dynamic(
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export default function WorkingMemoryPage() {
   const { generateNewGame } = useWorkingMemoryStore();
-  
+
   // Initialize game when component mounts
   useEffect(() => {
     generateNewGame();
   }, [generateNewGame]);
-  
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        {/* Back Button */}
-        <div className="mb-6">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver al Dashboard
-            </Button>
-          </Link>
+    <RequireAuth>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          {/* Back Button */}
+          <div className="mb-6">
+            <Link href="/dashboard">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver al Dashboard
+              </Button>
+            </Link>
+          </div>
+
+          {/* Game Component */}
+          <WorkingMemoryGame />
         </div>
-        
-        {/* Game Component */}
-        <WorkingMemoryGame />
       </div>
-    </div>
+    </RequireAuth>
   );
 }
