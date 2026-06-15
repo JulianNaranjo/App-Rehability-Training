@@ -20,6 +20,7 @@ const VerbalMemoryGame = dynamic(
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export default function VerbalMemoryPage() {
   const { startGame } = useVerbalMemoryStore();
@@ -29,19 +30,21 @@ export default function VerbalMemoryPage() {
   }, [startGame]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Volver al Dashboard
-            </Button>
-          </Link>
-        </div>
+    <RequireAuth>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-6">
+            <Link href="/dashboard">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver al Dashboard
+              </Button>
+            </Link>
+          </div>
 
-        <VerbalMemoryGame />
+          <VerbalMemoryGame />
+        </div>
       </div>
-    </div>
+    </RequireAuth>
   );
 }

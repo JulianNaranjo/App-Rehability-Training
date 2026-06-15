@@ -13,6 +13,7 @@ import { useGameStore } from '@/store/game-store';
 import { Card } from '@/components/ui/Card';
 import { User, Trophy, Clock, Target, Gamepad2 } from 'lucide-react';
 import { cn, formatTime } from '@/lib/utils';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 
 export default function ProfilePage() {
   const { stats } = useGameStore();
@@ -54,7 +55,8 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <RequireAuth>
+      <div className="space-y-8">
       {/* Page Header */}
       <header className="text-center mb-8">
         <div className="flex items-center justify-center gap-3 mb-4">
@@ -139,6 +141,7 @@ export default function ProfilePage() {
           </p>
         </Card>
       )}
-    </div>
+      </div>
+    </RequireAuth>
   );
 }

@@ -12,9 +12,10 @@ import { useAuthStore } from "@/store/auth-store";
 import LoginPage from "./page";
 
 const push = vi.fn();
+const replace = vi.fn();
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push }),
+  useRouter: () => ({ push, replace }),
 }));
 
 const resetStore = () => {
@@ -25,6 +26,7 @@ describe("LoginPage", () => {
   beforeEach(() => {
     resetStore();
     push.mockClear();
+    replace.mockClear();
   });
 
   it("renders email and password fields and a submit button", () => {
@@ -33,6 +35,21 @@ describe("LoginPage", () => {
     expect(screen.getByLabelText(/correo electrónico/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/contraseña/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /entrar/i })).toBeInTheDocument();
+  });
+
+  it("redirects to /dashboard and does not render the form for an authenticated visitor", () => {
+    useAuthStore.setState({
+      user: mockUser,
+      status: "authenticated",
+      error: undefined,
+    });
+
+    render(<LoginPage />);
+
+    expect(replace).toHaveBeenCalledWith("/dashboard");
+    expect(replace).toHaveBeenCalledTimes(1);
+    expect(screen.queryByLabelText(/correo electrónico/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /entrar/i })).not.toBeInTheDocument();
   });
 
   it("does not surface a global/bootstrap error before the user submits", () => {

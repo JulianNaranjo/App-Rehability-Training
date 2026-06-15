@@ -17,6 +17,7 @@ import { type FormEvent, useState } from "react";
 
 import { Button, Card, Input } from "@/components/ui";
 import { useAuthStore } from "@/store/auth-store";
+import { RedirectIfAuthenticated } from "@/components/auth/RedirectIfAuthenticated";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -50,68 +51,70 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto space-y-8 py-10">
-      <header className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-text-primary">
-          Crear cuenta
-        </h1>
-        <p className="text-text-secondary">
-          Regístrate para empezar a jugar.
-        </p>
-      </header>
-
-      <Card variant="elevated" padding="lg">
-        <form onSubmit={onSubmit} className="space-y-6">
-          <Input
-            label="Nombre"
-            type="text"
-            value={displayName}
-            onChange={(event) => setDisplayName(event.target.value)}
-            required
-            disabled={loading}
-            autoComplete="name"
-          />
-
-          <Input
-            label="Correo electrónico"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-            disabled={loading}
-            autoComplete="email"
-          />
-
-          <Input
-            label="Contraseña"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-            disabled={loading}
-            autoComplete="new-password"
-            error={formError}
-          />
-
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            loading={loading}
-            disabled={loading}
-            className="w-full"
-          >
+    <RedirectIfAuthenticated>
+      <div className="max-w-md mx-auto space-y-8 py-10">
+        <header className="text-center space-y-2">
+          <h1 className="text-3xl font-bold text-text-primary">
             Crear cuenta
-          </Button>
-        </form>
-      </Card>
+          </h1>
+          <p className="text-text-secondary">
+            Regístrate para empezar a jugar.
+          </p>
+        </header>
 
-      <p className="text-center text-sm text-text-secondary">
-        ¿Ya tienes una cuenta?{" "}
-        <Link href="/auth/login" className="text-primary-600 font-medium hover:text-primary-700">
-          Inicia sesión
-        </Link>
-      </p>
-    </div>
+        <Card variant="elevated" padding="lg">
+          <form onSubmit={onSubmit} className="space-y-6">
+            <Input
+              label="Nombre"
+              type="text"
+              value={displayName}
+              onChange={(event) => setDisplayName(event.target.value)}
+              required
+              disabled={loading}
+              autoComplete="name"
+            />
+
+            <Input
+              label="Correo electrónico"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+              disabled={loading}
+              autoComplete="email"
+            />
+
+            <Input
+              label="Contraseña"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              disabled={loading}
+              autoComplete="new-password"
+              error={formError}
+            />
+
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              loading={loading}
+              disabled={loading}
+              className="w-full"
+            >
+              Crear cuenta
+            </Button>
+          </form>
+        </Card>
+
+        <p className="text-center text-sm text-text-secondary">
+          ¿Ya tienes una cuenta?{" "}
+          <Link href="/auth/login" className="text-primary-600 font-medium hover:text-primary-700">
+            Inicia sesión
+          </Link>
+        </p>
+      </div>
+    </RedirectIfAuthenticated>
   );
 }

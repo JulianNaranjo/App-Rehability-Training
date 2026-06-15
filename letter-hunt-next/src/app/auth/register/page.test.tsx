@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { mockUser } from "@/lib/api/__mocks__/handlers";
 import { server } from "@/lib/api/__mocks__/server";
 import { API_BASE_URL } from "@/lib/api/client";
 import { UNKNOWN_ERROR_MESSAGE } from "@/lib/api/errors";
@@ -11,9 +12,10 @@ import { useAuthStore } from "@/store/auth-store";
 import RegisterPage from "./page";
 
 const push = vi.fn();
+const replace = vi.fn();
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push }),
+  useRouter: () => ({ push, replace }),
 }));
 
 const resetStore = () => {
@@ -36,6 +38,7 @@ describe("RegisterPage", () => {
   beforeEach(() => {
     resetStore();
     push.mockClear();
+    replace.mockClear();
   });
 
   it("renders email, password, and displayName fields and a submit button", () => {
@@ -45,6 +48,21 @@ describe("RegisterPage", () => {
     expect(screen.getByLabelText(/contraseña/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/nombre/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /crear cuenta/i })).toBeInTheDocument();
+  });
+
+  it("redirects to /dashboard and does not render the form for an authenticated visitor", () => {
+    useAuthStore.setState({
+      user: mockUser,
+      status: "authenticated",
+      error: undefined,
+    });
+
+    render(<RegisterPage />);
+
+    expect(replace).toHaveBeenCalledWith("/dashboard");
+    expect(replace).toHaveBeenCalledTimes(1);
+    expect(screen.queryByLabelText(/correo electrónico/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /crear cuenta/i })).not.toBeInTheDocument();
   });
 
   it("does not surface a global/bootstrap error before the user submits", () => {
