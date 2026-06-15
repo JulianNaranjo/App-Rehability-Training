@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthBootstrap } from "@/components/auth/AuthBootstrap";
+import { MswProvider } from "@/components/dev/MswProvider";
 import { Navbar } from "@/components/navigation/Navbar";
 import "./globals.css";
 
@@ -30,11 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800`}
       >
-        <AuthBootstrap />
-        <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <main className="max-w-7xl mx-auto pt-16">{children}</main>
-        </div>
+        <MswProvider>
+          <AuthBootstrap />
+          <Navbar />
+          <div className="container mx-auto px-4 py-8">
+            <main className="max-w-7xl mx-auto pt-16">{children}</main>
+          </div>
+        </MswProvider>
       </body>
     </html>
   );
