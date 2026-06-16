@@ -34,8 +34,11 @@ export function useDailyTip(): UseDailyTipResult {
   const status = useAuthStore((s) => s.status);
   const router = useRouter();
 
-  const [tip, setTip] = useState<Tip | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [state, setState] = useState<{ tip: Tip | null; isOpen: boolean }>({
+    tip: null,
+    isOpen: false,
+  });
+  const { tip, isOpen } = state;
 
   useEffect(() => {
     if (status !== 'authenticated') return;
@@ -48,8 +51,11 @@ export function useDailyTip(): UseDailyTipResult {
     const next = selectNextTip(allTipsInOrder, record.lastSeenTipId);
     if (next === null) return;
 
-    setTip(next);
-    setIsOpen(true);
+    // Client-only gate: tip selection depends on localStorage, which cannot be
+    // read during render (SSR-safe). Setting state on mount is the intended
+    // synchronization, so the cascading-render warning does not apply here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setState({ tip: next, isOpen: true });
   }, [status]);
 
   const persist = useCallback(() => {
@@ -59,12 +65,12 @@ export function useDailyTip(): UseDailyTipResult {
 
   const dismiss = useCallback(() => {
     persist();
-    setIsOpen(false);
+    setState((s) => ({ ...s, isOpen: false }));
   }, [persist]);
 
   const seeAll = useCallback(() => {
     persist();
-    setIsOpen(false);
+    setState((s) => ({ ...s, isOpen: false }));
     router.push('/tips');
   }, [persist, router]);
 

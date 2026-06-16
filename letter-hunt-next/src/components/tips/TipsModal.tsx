@@ -45,8 +45,11 @@ export function TipsModal({ tip, onDismiss, onSeeAll }: TipsModalProps) {
   const titleId = useId();
   const primaryBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Only portal after mount — eliminates SSR/hydration mismatch
+  // Only portal after mount — eliminates SSR/hydration mismatch. This is a
+  // client-only signal that cannot be derived during render, so setting state
+  // on mount is the intended effect, not a cascading-render hazard.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
