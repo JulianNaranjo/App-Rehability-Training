@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth-store';
 import {
   Home,
+  Lightbulb,
   Trophy,
   Settings,
   User,
@@ -56,15 +57,18 @@ export function Navbar() {
   const status = useAuthStore((state) => state.status);
   const logout = useAuthStore((state) => state.logout);
 
+  const isAuthenticated = status === 'authenticated' && user;
+
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: <Home className="w-5 h-5" /> },
     { href: '/game/selection', label: 'Jugar', icon: <Gamepad2 className="w-5 h-5" /> },
     { href: '/leaderboard', label: 'Clasificación', icon: <Trophy className="w-5 h-5" /> },
+    ...(isAuthenticated
+      ? [{ href: '/tips', label: 'Consejos', icon: <Lightbulb className="w-5 h-5" /> }]
+      : []),
     { href: '/settings', label: 'Configuración', icon: <Settings className="w-5 h-5" /> },
     { href: '/profile', label: 'Perfil', icon: <User className="w-5 h-5" /> },
   ];
-
-  const isAuthenticated = status === 'authenticated' && user;
 
   const onLogout = async () => {
     await logout();

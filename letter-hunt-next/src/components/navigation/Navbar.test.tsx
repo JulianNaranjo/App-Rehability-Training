@@ -44,6 +44,22 @@ describe("Navbar", () => {
     expect(screen.queryByRole("button", { name: /cerrar sesión/i })).not.toBeInTheDocument();
   });
 
+  it("shows the Consejos link when authenticated", () => {
+    useAuthStore.setState({ user: mockUser, status: "authenticated", error: undefined });
+
+    render(<Navbar />);
+
+    expect(screen.getByRole("link", { name: /consejos/i })).toBeInTheDocument();
+  });
+
+  it("hides the Consejos link when not authenticated", () => {
+    useAuthStore.setState({ user: null, status: "unauthenticated", error: undefined });
+
+    render(<Navbar />);
+
+    expect(screen.queryByRole("link", { name: /consejos/i })).not.toBeInTheDocument();
+  });
+
   it("calls logout and shows the login link after clicking the logout control", async () => {
     useAuthStore.setState({ user: mockUser, status: "authenticated", error: undefined });
 
