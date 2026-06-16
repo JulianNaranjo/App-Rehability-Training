@@ -11,6 +11,7 @@
 
 import { GameModeCard } from './GameModeCard';
 import { GameInstructions } from './GameInstructions';
+import { DailyTipGate } from '@/components/tips';
 import { dashboardConfig, isAttentionGameMode, isMemoryGameMode } from '@/skills/dashboard/dashboard-logic';
 import { cn } from '@/lib/utils';
 import { Brain, Sparkles } from 'lucide-react';
@@ -51,6 +52,7 @@ export function DashboardContainer({ className }: DashboardContainerProps) {
 
   return (
     <div className={cn('space-y-12', className)}>
+      <DailyTipGate />
       {/* Dashboard Header - Clinical */}
       <header className="text-center py-8">
         <div className="inline-flex items-center gap-3 mb-4">
