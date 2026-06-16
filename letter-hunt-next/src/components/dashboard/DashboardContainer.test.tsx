@@ -1,6 +1,6 @@
 // src/components/dashboard/DashboardContainer.test.tsx
 import { act, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { mockUser } from '@/lib/api/__mocks__/handlers';
 import { useAuthStore } from '@/store/auth-store';
