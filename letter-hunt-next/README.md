@@ -16,6 +16,15 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Local development auth (dev seed)
+
+In development, the app runs against in-memory MSW mocks (no real backend yet). A seed account is always available so you can log in without registering first:
+
+- Email: `dev@letter-hunt.local`
+- Password: `devpassword`
+
+You still start logged out — log in explicitly with these credentials to authenticate. This state lives in memory only and resets on every dev server restart. The seed is dev-only (defined in `src/lib/api/__mocks__/dev-handlers.ts`) and must be removed once a real backend exists.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

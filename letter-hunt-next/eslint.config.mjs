@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated reports/output — not source, must not be linted.
+    "coverage/**",
+    "playwright-report/**",
   ]),
 ]);
 
