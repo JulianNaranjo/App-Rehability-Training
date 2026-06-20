@@ -30,6 +30,22 @@ const users = new Map<string, StoredUser>();
 let session: AuthUserDto | null = null;
 let nextId = 1;
 
+// --- DEV-ONLY SEED ---------------------------------------------------------
+// Pre-populated account so login works immediately after every `next dev`
+// restart without re-registering. Credentials are intentionally hardcoded
+// (dev-only file, never shipped). REMOVE this block when a real backend lands.
+const SEED_USER: StoredUser = {
+  password: "devpassword",
+  user: {
+    id: "user-seed",
+    email: "dev@letter-hunt.local",
+    displayName: "Dev User",
+    role: "patient",
+  },
+};
+users.set(SEED_USER.user.email, SEED_USER);
+// --------------------------------------------------------------------------
+
 const unauthorized = () =>
   HttpResponse.json({ message: "Session expired.", code: "UNAUTHORIZED" }, { status: 401 });
 
